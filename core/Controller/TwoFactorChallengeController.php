@@ -34,6 +34,7 @@ use OCP\Authentication\TwoFactorAuth\IActivatableAtLogin;
 use OCP\Authentication\TwoFactorAuth\IProvider;
 use OCP\Authentication\TwoFactorAuth\IProvidesCustomCSP;
 use OCP\Authentication\TwoFactorAuth\TwoFactorException;
+use OC\Core\Db\LoginFlowV2Mapper;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\ISession;
@@ -57,6 +58,9 @@ class TwoFactorChallengeController extends Controller {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var LoginFlowV2Mapper */
+	private $mapper;
+
 	/**
 	 * @param string $appName
 	 * @param IRequest $request
@@ -67,13 +71,14 @@ class TwoFactorChallengeController extends Controller {
 	 * @param ILogger $logger
 	 */
 	public function __construct($appName, IRequest $request, Manager $twoFactorManager, IUserSession $userSession,
-		ISession $session, IURLGenerator $urlGenerator, ILogger $logger) {
+		ISession $session, IURLGenerator $urlGenerator, ILogger $logger, LoginFlowV2Mapper $mapper) {
 		parent::__construct($appName, $request);
 		$this->twoFactorManager = $twoFactorManager;
 		$this->userSession = $userSession;
 		$this->session = $session;
 		$this->urlGenerator = $urlGenerator;
 		$this->logger = $logger;
+		$this->mapper = $mapper;
 	}
 
 	/**
@@ -199,6 +204,14 @@ class TwoFactorChallengeController extends Controller {
 
 		try {
 			if ($this->twoFactorManager->verifyChallenge($challengeProviderId, $user, $challenge)) {
+				
+				// save login ip 
+				// @kjh
+				$loginIP = $this->getIPAddress();
+				$this->mapper->insertLastLoginIP($user->getUID(), $loginIP);
+				$this->mapper->updateTFASetting($user->getUID(), 0);
+				// end
+
 				if (!is_null($redirect_url)) {
 					return new RedirectResponse($this->urlGenerator->getAbsoluteURL(urldecode($redirect_url)));
 				}
@@ -285,4 +298,22 @@ class TwoFactorChallengeController extends Controller {
 			]
 		));
 	}
+
+    // get ip address
+    private function getIPAddress() {  
+        //whether ip is from the share internet  
+        if(!empty($_SERVER['HTTP_CLIENT_IP'])) {  
+                    $ip = $_SERVER['HTTP_CLIENT_IP'];  
+        }  
+        //whether ip is from the proxy  
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  
+                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];  
+        }  
+        //whether ip is from the remote address  
+        else{  
+                 $ip = $_SERVER['REMOTE_ADDR'];  
+        }  
+        return $ip;  
+    }  
+
 }

@@ -203,6 +203,10 @@ window.addEventListener('DOMContentLoaded', function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       url: OC.generateUrl('/settings/admin/mailsettings'),
       type: 'POST',
+      headers: {
+        'OCS-APIREQUEST': 'true',
+        'requesttoken': OC.requestToken
+      },
       data: jquery__WEBPACK_IMPORTED_MODULE_0___default()('#mail_general_settings_form').serialize(),
       success: function success() {
         OC.msg.finishedSuccess('#mail_settings_msg', t('settings', 'Saved'));
@@ -223,6 +227,10 @@ window.addEventListener('DOMContentLoaded', function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       url: OC.generateUrl('/settings/admin/mailsettings/credentials'),
       type: 'POST',
+      headers: {
+        'OCS-APIREQUEST': 'true',
+        'requesttoken': OC.requestToken
+      },
       data: jquery__WEBPACK_IMPORTED_MODULE_0___default()('#mail_credentials_settings').serialize(),
       success: function success() {
         OC.msg.finishedSuccess('#mail_settings_msg', t('settings', 'Saved'));
@@ -247,6 +255,10 @@ window.addEventListener('DOMContentLoaded', function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       url: OC.generateUrl('/settings/admin/mailtest'),
       type: 'POST',
+      headers: {
+        'OCS-APIREQUEST': 'true',
+        'requesttoken': OC.requestToken
+      },
       success: function success() {
         OC.msg.finishedSuccess('#sendtestmail_msg', t('settings', 'Email sent'));
       },
@@ -536,4 +548,4 @@ window.addEventListener('DOMContentLoaded', function () {
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=settings-legacy-admin.js.map?v=c23b9486ed473402820c
+//# sourceMappingURL=settings-legacy-admin.js.map?v=cb2d020c368972bb8f03

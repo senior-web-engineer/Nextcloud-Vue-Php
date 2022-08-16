@@ -1,5 +1,6 @@
 -run termianl:
 	crontab -e
+	# crontab -u www-data -e
 -add at the end:
 	*/5  *  *  *  * php -f /path/to/cron.php
 

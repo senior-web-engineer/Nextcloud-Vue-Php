@@ -85,6 +85,77 @@ class LoginFlowV2Mapper extends QBMapper {
 		$qb->execute();
 	}
 
+	// @kjh
+	// insert or update last login IP
+	public function insertLastLoginIP($userId, $loginIP): void {
+		$qb = $this->db->getQueryBuilder();
+		$lastLoginIP = $this->getLastLoginIP($userId);
+		if($lastLoginIP !=''){
+			$qb->update('preferences')
+			->set('configvalue', $qb->createNamedParameter($loginIP))
+			->where($qb->expr()->eq('userid', $qb->createNamedParameter($userId)))
+			->andWhere($qb->expr()->eq('appid', $qb->createNamedParameter('login')))
+			->andWhere($qb->expr()->eq('configkey', $qb->createNamedParameter('lastLoginIP')));
+		} else {
+			$qb->insert('preferences')
+			->setValue('userid', $qb->createNamedParameter($userId))
+			->setValue('appid', $qb->createNamedParameter('login'))
+			->setValue('configkey', $qb->createNamedParameter('lastLoginIP'))
+			->setValue('configvalue', $qb->createNamedParameter($loginIP));
+		}
+		$qb->execute();
+	}
+
+	// update user 2fa setting
+	public function updateTFASetting($userId, $val): void {
+		$this->updateProviderSetting($userId, $val);
+	}
+
+	// check last login IP
+	public function checkLoginIp($userId, $currentLoginIP){
+		$lastLoginIP = $this->getLastLoginIP($userId);
+		$lastDomain = $this->getDomain($lastLoginIP);
+		$currentDomain = $this->getDomain($currentLoginIP);
+		if($lastDomain == $currentDomain) $this->updateProviderSetting($userId, 0);
+		else $this->updateProviderSetting($userId, 1);
+	}
+
+	// update provider setting
+	private function updateProviderSetting($userId, $val): void {
+		$qb = $this->db->getQueryBuilder();
+		$qb->update('twofactor_providers')
+			->set('enabled', $qb->createNamedParameter($val))
+			->where($qb->expr()->eq('uid', $qb->createNamedParameter($userId)))
+			->andWhere($qb->expr()->eq('provider_id', $qb->createNamedParameter('email')));
+		$qb->execute();
+	}
+
+	// get last login IP
+	private function getLastLoginIP($userId) {
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('configvalue')
+			->from('preferences')
+			->where($qb->expr()->eq('userid', $qb->createNamedParameter($userId)))
+			->andWhere($qb->expr()->eq('appid', $qb->createNamedParameter('login')))
+			->andWhere($qb->expr()->eq('configkey', $qb->createNamedParameter('lastLoginIP')));
+		$result = $qb->executeQuery();
+		$one = $result->fetchOne();
+		// $raw = $result->fetchAll();
+		$result->closeCursor();
+		if (!$one) return '';
+		return $one;
+	}
+	
+	// determine outgoing or incoming
+	private function getDomain($ip)
+	{
+		if(!$ip) return '';
+		$domain = explode('.', $ip);
+		return $domain[0];
+	}
+
+	// end
+
 	/**
 	 * @param LoginFlowV2 $flowV2
 	 * @return LoginFlowV2

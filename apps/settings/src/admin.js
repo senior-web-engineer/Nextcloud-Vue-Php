@@ -197,6 +197,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		$.ajax({
 			url: OC.generateUrl('/settings/admin/mailsettings'),
 			type: 'POST',
+			headers: { 'OCS-APIREQUEST':'true','requesttoken': OC.requestToken},
 			data: $('#mail_general_settings_form').serialize(),
 			success: () => {
 				OC.msg.finishedSuccess('#mail_settings_msg', t('settings', 'Saved'))
@@ -217,6 +218,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		$.ajax({
 			url: OC.generateUrl('/settings/admin/mailsettings/credentials'),
 			type: 'POST',
+			headers: { 'OCS-APIREQUEST':'true','requesttoken': OC.requestToken},
 			data: $('#mail_credentials_settings').serialize(),
 			success: () => {
 				OC.msg.finishedSuccess('#mail_settings_msg', t('settings', 'Saved'))
@@ -243,6 +245,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		$.ajax({
 			url: OC.generateUrl('/settings/admin/mailtest'),
 			type: 'POST',
+			headers: { 'OCS-APIREQUEST':'true','requesttoken': OC.requestToken},
 			success: () => {
 				OC.msg.finishedSuccess('#sendtestmail_msg', t('settings', 'Email sent'))
 			},

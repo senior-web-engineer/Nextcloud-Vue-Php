@@ -37,6 +37,7 @@ use OC\Authentication\Login\LoginData;
 use OC\Authentication\WebAuthn\Manager as WebAuthnManager;
 use OC\Security\Bruteforce\Throttler;
 use OC\User\Session;
+use OC\Core\Db\LoginFlowV2Mapper;
 use OC_App;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -87,6 +88,8 @@ class LoginController extends Controller {
 	private $manager;
 	/** @var IL10N */
 	private $l10n;
+	/** @var LoginFlowV2Mapper */
+	private $mapper;
 
 	public function __construct(?string $appName,
 								IRequest $request,
@@ -102,7 +105,8 @@ class LoginController extends Controller {
 								IInitialStateService $initialStateService,
 								WebAuthnManager $webAuthnManager,
 								IManager $manager,
-								IL10N $l10n) {
+								IL10N $l10n,
+								LoginFlowV2Mapper $mapper) {
 		parent::__construct($appName, $request);
 		$this->userManager = $userManager;
 		$this->config = $config;
@@ -117,6 +121,7 @@ class LoginController extends Controller {
 		$this->webAuthnManager = $webAuthnManager;
 		$this->manager = $manager;
 		$this->l10n = $l10n;
+		$this->mapper = $mapper;
 	}
 
 	/**
@@ -326,6 +331,13 @@ class LoginController extends Controller {
 			$timezone,
 			$timezone_offset
 		);
+
+		// @kjh
+		// check login IP with last one
+		$currentLoginIP = $this->getIPAddress();
+		$this->mapper->checkLoginIp($user, $currentLoginIP);
+		// end
+
 		$result = $this->loginChain->process($data);
 		if (!$result->isSuccess()) {
 			return $this->createLoginFailedResponse(
@@ -394,4 +406,22 @@ class LoginController extends Controller {
 		$this->session->set('last-password-confirm', $confirmTimestamp);
 		return new DataResponse(['lastLogin' => $confirmTimestamp], Http::STATUS_OK);
 	}
+
+	// get ip address
+	private function getIPAddress() {  
+		//whether ip is from the share internet  
+		if(!empty($_SERVER['HTTP_CLIENT_IP'])) {  
+					$ip = $_SERVER['HTTP_CLIENT_IP'];  
+		}  
+		//whether ip is from the proxy  
+		elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  
+					$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];  
+		}  
+		//whether ip is from the remote address  
+		else{  
+					$ip = $_SERVER['REMOTE_ADDR'];  
+		}  
+		return $ip;  
+	} 
+
 }
