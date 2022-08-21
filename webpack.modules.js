@@ -96,9 +96,9 @@ module.exports = {
 		dashboard: path.join(__dirname, 'apps/user_status/src', 'dashboard.js'),
 		menu: path.join(__dirname, 'apps/user_status/src', 'menu.js'),
 	},
-	weather_status: {
-		'weather-status': path.join(__dirname, 'apps/weather_status/src', 'weather-status.js'),
-	},
+	// weather_status: {
+	// 	'weather-status': path.join(__dirname, 'apps/weather_status/src', 'weather-status.js'),
+	// },
 	workflowengine: {
 		workflowengine: path.join(__dirname, 'apps/workflowengine/src', 'workflowengine.js'),
 	},

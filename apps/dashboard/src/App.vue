@@ -9,7 +9,7 @@
 			</div>
 		</ul>
 
-		<Draggable v-model="layout"
+		<!-- <Draggable v-model="layout"
 			class="panels"
 			v-bind="{swapThreshold: 0.30, delay: 500, delayOnTouchOnly: true, touchStartThreshold: 3}"
 			handle=".panel--header"
@@ -24,14 +24,14 @@
 					<div :ref="panels[panelId].id" :data-id="panels[panelId].id" />
 				</div>
 			</div>
-		</Draggable>
+		</Draggable> -->
 
 		<div class="footer">
-			<a class="edit-panels icon-rename"
+			<!-- <a class="edit-panels icon-rename"
 				tabindex="0"
 				@click="showModal"
 				@keyup.enter="showModal"
-				@keyup.space="showModal">{{ t('dashboard', 'Customize') }}</a>
+				@keyup.space="showModal">{{ t('dashboard', 'Customize') }}</a> -->
 		</div>
 
 		<Modal v-if="modal" size="normal" @close="closeModal">

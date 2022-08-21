@@ -1301,101 +1301,7 @@ var render = function () {
         0
       ),
       _vm._v(" "),
-      _c(
-        "Draggable",
-        _vm._b(
-          {
-            staticClass: "panels",
-            attrs: { handle: ".panel--header" },
-            on: { end: _vm.saveLayout },
-            model: {
-              value: _vm.layout,
-              callback: function ($$v) {
-                _vm.layout = $$v
-              },
-              expression: "layout",
-            },
-          },
-          "Draggable",
-          {
-            swapThreshold: 0.3,
-            delay: 500,
-            delayOnTouchOnly: true,
-            touchStartThreshold: 3,
-          },
-          false
-        ),
-        _vm._l(_vm.layout, function (panelId) {
-          return _c(
-            "div",
-            { key: _vm.panels[panelId].id, staticClass: "panel" },
-            [
-              _c("div", { staticClass: "panel--header" }, [
-                _c("h2", { class: _vm.panels[panelId].iconClass }, [
-                  _vm._v(
-                    "\n\t\t\t\t\t" +
-                      _vm._s(_vm.panels[panelId].title) +
-                      "\n\t\t\t\t"
-                  ),
-                ]),
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass: "panel--content",
-                  class: { loading: !_vm.panels[panelId].mounted },
-                },
-                [
-                  _c("div", {
-                    ref: _vm.panels[panelId].id,
-                    refInFor: true,
-                    attrs: { "data-id": _vm.panels[panelId].id },
-                  }),
-                ]
-              ),
-            ]
-          )
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "footer" }, [
-        _c(
-          "a",
-          {
-            staticClass: "edit-panels icon-rename",
-            attrs: { tabindex: "0" },
-            on: {
-              click: _vm.showModal,
-              keyup: [
-                function ($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.showModal.apply(null, arguments)
-                },
-                function ($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "space", 32, $event.key, [
-                      " ",
-                      "Spacebar",
-                    ])
-                  ) {
-                    return null
-                  }
-                  return _vm.showModal.apply(null, arguments)
-                },
-              ],
-            },
-          },
-          [_vm._v(_vm._s(_vm.t("dashboard", "Customize")))]
-        ),
-      ]),
+      _c("div", { staticClass: "footer" }),
       _vm._v(" "),
       _vm.modal
         ? _c(
@@ -1949,4 +1855,4 @@ render._withStripped = true
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=dashboard-main.js.map?v=4ecceb33188ce1522f61
+//# sourceMappingURL=dashboard-main.js.map?v=42409e8c45f7cad95654
