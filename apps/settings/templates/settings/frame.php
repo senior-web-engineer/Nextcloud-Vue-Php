@@ -36,7 +36,7 @@ script('files', 'jquery.fileupload');
 		<?php
 		}
 		foreach ($_['forms']['personal'] as $form) {
-			if (isset($form['anchor'])) {
+			if (isset($form['anchor']) && !in_array($form['anchor'], ['notifications','accessibility','sharing','groupware','workflow'])) {
 				$anchor = \OC::$server->getURLGenerator()->linkToRoute('settings.PersonalSettings.index', ['section' => $form['anchor']]);
 				$class = 'nav-icon-' . $form['anchor'];
 				$sectionName = $form['section-name'];
