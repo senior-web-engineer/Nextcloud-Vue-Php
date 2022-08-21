@@ -318,7 +318,7 @@ import escapeHTML from 'escape-html'
 			}
 
 			const props = response.propStat[0].properties
-console.log(props,"@@@@@@@@@@")
+
 			const data = {
 				id: props[Client.PROPERTY_INTERNAL_FILEID],
 				path: OC.dirname(path) || '/',

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button v-if="!enabled"
+		<!-- <button v-if="!enabled"
 			id="generate-backup-codes"
 			:disabled="generatingCodes"
 			@click="generateBackupCodes">
@@ -39,7 +39,7 @@
 					{{ t('twofactor_backupcodes', 'If you regenerate backup codes, you automatically invalidate old codes.') }}
 				</em>
 			</p>
-		</template>
+		</template> -->
 	</div>
 </template>
 

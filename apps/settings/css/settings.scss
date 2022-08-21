@@ -223,7 +223,7 @@ select {
 
 		.personal-settings-container {
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 1fr 1fr 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
 		}
 
 		.profile-settings-container {
@@ -245,7 +245,7 @@ select {
 
 		.personal-settings-container {
 			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 1fr 1fr 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
 		}
 
 		.profile-settings-container {
@@ -266,7 +266,7 @@ select {
 
 		.personal-settings-container {
 			grid-template-columns: 1fr;
-			grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+			grid-template-rows: 1fr 1fr 1fr 1fr;
 		}
 
 		.profile-settings-container {
@@ -279,7 +279,7 @@ select {
 .personal-settings-container {
 	display: inline-grid;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
 
 	&:after {
 		clear: both;

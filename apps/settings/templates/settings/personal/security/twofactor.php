@@ -24,7 +24,7 @@ declare(strict_types=1);
 
 ?>
 
-<div id="two-factor-auth" class="section">
+<!-- <div id="two-factor-auth" class="section">
 	<h2><?php p($l->t('Two-Factor Authentication'));?></h2>
 	<a target="_blank" rel="noreferrer noopener" class="icon-info"
 	   title="<?php p($l->t('Open documentation'));?>"
@@ -64,5 +64,5 @@ declare(strict_types=1);
 		</li>
 	<?php } ?>
 	</ul>
-</div>
+</div> -->
 

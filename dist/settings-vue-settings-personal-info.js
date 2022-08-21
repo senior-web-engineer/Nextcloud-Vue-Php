@@ -357,12 +357,11 @@ var ProfileVisibilityView = vue__WEBPACK_IMPORTED_MODULE_13__["default"].extend(
 new DisplayNameView().$mount('#vue-displayname-section');
 new EmailView().$mount('#vue-email-section');
 new LanguageView().$mount('#vue-language-section');
-new ProfileView().$mount('#vue-profile-section');
-new OrganisationView().$mount('#vue-organisation-section');
-new RoleView().$mount('#vue-role-section');
-new HeadlineView().$mount('#vue-headline-section');
-new BiographyView().$mount('#vue-biography-section');
-new ProfileVisibilityView().$mount('#vue-profile-visibility-section');
+new ProfileView().$mount('#vue-profile-section'); // new OrganisationView().$mount('#vue-organisation-section')
+// new RoleView().$mount('#vue-role-section')
+// new HeadlineView().$mount('#vue-headline-section')
+// new BiographyView().$mount('#vue-biography-section')
+// new ProfileVisibilityView().$mount('#vue-profile-visibility-section')
 
 /***/ }),
 
@@ -10191,4 +10190,4 @@ render._withStripped = true
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=settings-vue-settings-personal-info.js.map?v=6402c9563b580979b562
+//# sourceMappingURL=settings-vue-settings-personal-info.js.map?v=85225d671a28d4c1277f

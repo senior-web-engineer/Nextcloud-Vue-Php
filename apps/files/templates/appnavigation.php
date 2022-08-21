@@ -28,7 +28,7 @@
 		<?php endif; ?>
 	</ul>
 	<div id="app-settings">
-		<div id="app-settings-header">
+		<!-- <div id="app-settings-header">
 			<button class="settings-button"
 					data-apps-slide-toggle="#app-settings-content">
 				<?php p($l->t('Settings')); ?>
@@ -50,7 +50,7 @@
 			<input id="webdavurl" type="text" readonly="readonly"
 				   value="<?php p($_['webdav_url']); ?>"/>
 			<em><a href="<?php echo link_to_docs('user-webdav') ?>" target="_blank" rel="noreferrer noopener"><?php p($l->t('Use this address to access your Files via WebDAV')) ?> ↗</a></em>
-		</div>
+		</div> -->
 	</div>
 
 </div>

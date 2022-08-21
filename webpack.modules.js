@@ -40,7 +40,7 @@ module.exports = {
 		maintenance: path.join(__dirname, 'core/src', 'maintenance.js'),
 		profile: path.join(__dirname, 'core/src', 'profile.js'),
 		recommendedapps: path.join(__dirname, 'core/src', 'recommendedapps.js'),
-		systemtags: path.resolve(__dirname, 'core/src', 'systemtags/merged-systemtags.js'),
+		// systemtags: path.resolve(__dirname, 'core/src', 'systemtags/merged-systemtags.js'),
 		'unified-search': path.join(__dirname, 'core/src', 'unified-search.js'),
 	},
 	dashboard: {
@@ -83,9 +83,9 @@ module.exports = {
 		'legacy-admin': path.join(__dirname, 'apps/settings/src', 'admin.js'),
 		'apps': path.join(__dirname, 'apps/settings/src', 'apps.js'),
 	},
-	systemtags: {
-		systemtags: path.join(__dirname, 'apps/systemtags/src', 'systemtags.js'),
-	},
+	// systemtags: {
+	// 	systemtags: path.join(__dirname, 'apps/systemtags/src', 'systemtags.js'),
+	// },
 	twofactor_backupcodes: {
 		settings: path.join(__dirname, 'apps/twofactor_backupcodes/src', 'settings.js'),
 	},

@@ -144,10 +144,9 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_3__["default"].prototype.t = t;
 var initialState = (0,_nextcloud_initial_state__WEBPACK_IMPORTED_MODULE_0__.loadState)('twofactor_backupcodes', 'state');
 _store__WEBPACK_IMPORTED_MODULE_2__["default"].replaceState(initialState);
-var View = vue__WEBPACK_IMPORTED_MODULE_3__["default"].extend(_views_PersonalSettings__WEBPACK_IMPORTED_MODULE_1__["default"]);
-new View({
-  store: _store__WEBPACK_IMPORTED_MODULE_2__["default"]
-}).$mount('#twofactor-backupcodes-settings');
+var View = vue__WEBPACK_IMPORTED_MODULE_3__["default"].extend(_views_PersonalSettings__WEBPACK_IMPORTED_MODULE_1__["default"]); // new View({
+// 	store,
+// }).$mount('#twofactor-backupcodes-settings')
 
 /***/ }),
 
@@ -528,162 +527,7 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      !_vm.enabled
-        ? _c(
-            "button",
-            {
-              attrs: {
-                id: "generate-backup-codes",
-                disabled: _vm.generatingCodes,
-              },
-              on: { click: _vm.generateBackupCodes },
-            },
-            [
-              _vm._v(
-                "\n\t\t" +
-                  _vm._s(
-                    _vm.t("twofactor_backupcodes", "Generate backup codes")
-                  ) +
-                  "\n\t\t"
-              ),
-              _c("span", {
-                class: { "icon-loading-small": _vm.generatingCodes },
-              }),
-            ]
-          )
-        : [
-            _c(
-              "p",
-              [
-                !_vm.haveCodes
-                  ? [
-                      _vm._v(
-                        "\n\t\t\t\t" +
-                          _vm._s(
-                            _vm.t(
-                              "twofactor_backupcodes",
-                              "Backup codes have been generated. {used} of {total} codes have been used.",
-                              { used: _vm.used, total: _vm.total }
-                            )
-                          ) +
-                          "\n\t\t\t"
-                      ),
-                    ]
-                  : [
-                      _vm._v(
-                        "\n\t\t\t\t" +
-                          _vm._s(
-                            _vm.t(
-                              "twofactor_backupcodes",
-                              "These are your backup codes. Please save and/or print them as you will not be able to read the codes again later"
-                            )
-                          ) +
-                          "\n\t\t\t\t"
-                      ),
-                      _c(
-                        "ul",
-                        _vm._l(_vm.codes, function (code) {
-                          return _c(
-                            "li",
-                            { key: code, staticClass: "backup-code" },
-                            [
-                              _vm._v(
-                                "\n\t\t\t\t\t\t" + _vm._s(code) + "\n\t\t\t\t\t"
-                              ),
-                            ]
-                          )
-                        }),
-                        0
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "a",
-                        {
-                          staticClass: "button primary",
-                          attrs: {
-                            href: _vm.downloadUrl,
-                            download: _vm.downloadFilename,
-                          },
-                        },
-                        [
-                          _vm._v(
-                            _vm._s(
-                              _vm.t(
-                                "twofactor_backupcodes",
-                                "Save backup codes"
-                              )
-                            )
-                          ),
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "button",
-                          on: { click: _vm.printCodes },
-                        },
-                        [
-                          _vm._v(
-                            "\n\t\t\t\t\t" +
-                              _vm._s(
-                                _vm.t(
-                                  "twofactor_backupcodes",
-                                  "Print backup codes"
-                                )
-                              ) +
-                              "\n\t\t\t\t"
-                          ),
-                        ]
-                      ),
-                    ],
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c("p", [
-              _c(
-                "button",
-                {
-                  attrs: { id: "generate-backup-codes" },
-                  on: { click: _vm.generateBackupCodes },
-                },
-                [
-                  _vm._v(
-                    "\n\t\t\t\t" +
-                      _vm._s(
-                        _vm.t(
-                          "twofactor_backupcodes",
-                          "Regenerate backup codes"
-                        )
-                      ) +
-                      "\n\t\t\t"
-                  ),
-                ]
-              ),
-            ]),
-            _vm._v(" "),
-            _c("p", [
-              _c("em", [
-                _vm._v(
-                  "\n\t\t\t\t" +
-                    _vm._s(
-                      _vm.t(
-                        "twofactor_backupcodes",
-                        "If you regenerate backup codes, you automatically invalidate old codes."
-                      )
-                    ) +
-                    "\n\t\t\t"
-                ),
-              ]),
-            ]),
-          ],
-    ],
-    2
-  )
+  return _c("div")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -897,4 +741,4 @@ render._withStripped = true
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=twofactor_backupcodes-settings.js.map?v=e5c2230b1b37a1d2f95d
+//# sourceMappingURL=twofactor_backupcodes-settings.js.map?v=b2d9ea7cd3b3c73156d1

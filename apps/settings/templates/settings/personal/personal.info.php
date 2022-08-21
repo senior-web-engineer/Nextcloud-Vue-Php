@@ -151,7 +151,8 @@ script('settings', [
 				<input type="hidden" id="addressscope" value="<?php p($_['addressScope']) ?>">
 			</form>
 		</div>
-		<div class="personal-settings-setting-box">
+
+		<!-- <div class="personal-settings-setting-box">
 			<form id="websiteform" class="section">
 				<h3>
 					<label for="website"><?php p($l->t('Website')); ?></label>
@@ -250,7 +251,8 @@ script('settings', [
 		</div>
 		<div class="personal-settings-setting-box">
 			<div id="vue-biography-section"></div>
-		</div>
+		</div> -->
+
 	</div>
 
 	<div class="profile-settings-container">
@@ -304,6 +306,6 @@ script('settings', [
 
 </div>
 
-<div class="personal-settings-section">
+<!-- <div class="personal-settings-section">
 	<div id="vue-profile-visibility-section"></div>
-</div>
+</div> -->

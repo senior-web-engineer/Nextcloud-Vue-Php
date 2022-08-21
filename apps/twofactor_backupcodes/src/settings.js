@@ -34,6 +34,6 @@ const initialState = loadState('twofactor_backupcodes', 'state')
 store.replaceState(initialState)
 
 const View = Vue.extend(PersonalSettings)
-new View({
-	store,
-}).$mount('#twofactor-backupcodes-settings')
+// new View({
+// 	store,
+// }).$mount('#twofactor-backupcodes-settings')

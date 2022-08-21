@@ -340,7 +340,6 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var props = response.propStat[0].properties;
-      console.log(props, "@@@@@@@@@@");
       var data = {
         id: props[Client.PROPERTY_INTERNAL_FILEID],
         path: OC.dirname(path) || '/',
@@ -1234,4 +1233,4 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=core-files_client.js.map?v=a9a414b8d7c2a506cbde
+//# sourceMappingURL=core-files_client.js.map?v=004468c4680db0dde4ae
