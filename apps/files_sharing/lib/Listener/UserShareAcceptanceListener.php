@@ -25,6 +25,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Listener;
 
 use OCA\Files_Sharing\AppInfo\Application;
@@ -36,7 +37,8 @@ use OCP\Share\Events\ShareCreatedEvent;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 
-class UserShareAcceptanceListener implements IEventListener {
+class UserShareAcceptanceListener implements IEventListener
+{
 
 	/** @var IConfig */
 	private $config;
@@ -45,13 +47,15 @@ class UserShareAcceptanceListener implements IEventListener {
 	/** @var IGroupManager */
 	private $groupManager;
 
-	public function __construct(IConfig $config, IManager $shareManager, IGroupManager $groupManager) {
+	public function __construct(IConfig $config, IManager $shareManager, IGroupManager $groupManager)
+	{
 		$this->config = $config;
 		$this->shareManager = $shareManager;
 		$this->groupManager = $groupManager;
 	}
 
-	public function handle(Event $event): void {
+	public function handle(Event $event): void
+	{
 		if (!($event instanceof ShareCreatedEvent)) {
 			return;
 		}
@@ -74,7 +78,8 @@ class UserShareAcceptanceListener implements IEventListener {
 		}
 	}
 
-	private function handleAutoAccept(IShare $share, string $userId) {
+	private function handleAutoAccept(IShare $share, string $userId)
+	{
 		$defaultAcceptSystemConfig = $this->config->getSystemValueBool('sharing.enable_share_accept', false) ? 'no' : 'yes';
 		$acceptDefault = $this->config->getUserValue($userId, Application::APP_ID, 'default_accept', $defaultAcceptSystemConfig) === 'yes';
 		if (!$this->config->getSystemValueBool('sharing.force_share_accept', false) && $acceptDefault) {

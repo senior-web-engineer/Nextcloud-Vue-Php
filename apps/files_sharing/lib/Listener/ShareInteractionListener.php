@@ -24,6 +24,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Listener;
 
 use OCP\Contacts\Events\ContactInteractedWithEvent;
@@ -36,7 +37,8 @@ use OCP\Share\Events\ShareCreatedEvent;
 use OCP\Share\IShare;
 use function in_array;
 
-class ShareInteractionListener implements IEventListener {
+class ShareInteractionListener implements IEventListener
+{
 	private const SUPPORTED_SHARE_TYPES = [
 		IShare::TYPE_USER,
 		IShare::TYPE_EMAIL,
@@ -52,15 +54,18 @@ class ShareInteractionListener implements IEventListener {
 	/** @var ILogger */
 	private $logger;
 
-	public function __construct(IEventDispatcher $dispatcher,
-								IUserManager $userManager,
-								ILogger $logger) {
+	public function __construct(
+		IEventDispatcher $dispatcher,
+		IUserManager $userManager,
+		ILogger $logger
+	) {
 		$this->dispatcher = $dispatcher;
 		$this->userManager = $userManager;
 		$this->logger = $logger;
 	}
 
-	public function handle(Event $event): void {
+	public function handle(Event $event): void
+	{
 		if (!($event instanceof ShareCreatedEvent)) {
 			// Unrelated
 			return;

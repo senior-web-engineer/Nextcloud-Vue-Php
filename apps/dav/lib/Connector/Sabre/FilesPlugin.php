@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -31,6 +32,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\Connector\Sabre;
 
 use OC\AppFramework\Http\Request;
@@ -51,11 +53,12 @@ use Sabre\DAV\Tree;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 
-class FilesPlugin extends ServerPlugin {
+class FilesPlugin extends ServerPlugin
+{
 
 	// namespace
 	public const NS_OWNCLOUD = 'http://owncloud.org/ns';
-	public const NS_NEXTCLOUD = 'http://nextcloud.org/ns';
+	public const NS_NEXTCLOUD = 'http:// /ns';
 	public const FILEID_PROPERTYNAME = '{http://owncloud.org/ns}id';
 	public const INTERNAL_FILEID_PROPERTYNAME = '{http://owncloud.org/ns}fileid';
 	public const PERMISSIONS_PROPERTYNAME = '{http://owncloud.org/ns}permissions';
@@ -70,14 +73,14 @@ class FilesPlugin extends ServerPlugin {
 	public const OWNER_DISPLAY_NAME_PROPERTYNAME = '{http://owncloud.org/ns}owner-display-name';
 	public const CHECKSUMS_PROPERTYNAME = '{http://owncloud.org/ns}checksums';
 	public const DATA_FINGERPRINT_PROPERTYNAME = '{http://owncloud.org/ns}data-fingerprint';
-	public const HAS_PREVIEW_PROPERTYNAME = '{http://nextcloud.org/ns}has-preview';
-	public const MOUNT_TYPE_PROPERTYNAME = '{http://nextcloud.org/ns}mount-type';
-	public const IS_ENCRYPTED_PROPERTYNAME = '{http://nextcloud.org/ns}is-encrypted';
-	public const IS_PUBLISHED_PROPERTYNAME = '{http://nextcloud.org/ns}is-published';
-	public const METADATA_ETAG_PROPERTYNAME = '{http://nextcloud.org/ns}metadata_etag';
-	public const UPLOAD_TIME_PROPERTYNAME = '{http://nextcloud.org/ns}upload_time';
-	public const CREATION_TIME_PROPERTYNAME = '{http://nextcloud.org/ns}creation_time';
-	public const SHARE_NOTE = '{http://nextcloud.org/ns}note';
+	public const HAS_PREVIEW_PROPERTYNAME = '{http:// /ns}has-preview';
+	public const MOUNT_TYPE_PROPERTYNAME = '{http:// /ns}mount-type';
+	public const IS_ENCRYPTED_PROPERTYNAME = '{http:// /ns}is-encrypted';
+	public const IS_PUBLISHED_PROPERTYNAME = '{http:// /ns}is-published';
+	public const METADATA_ETAG_PROPERTYNAME = '{http:// /ns}metadata_etag';
+	public const UPLOAD_TIME_PROPERTYNAME = '{http:// /ns}upload_time';
+	public const CREATION_TIME_PROPERTYNAME = '{http:// /ns}creation_time';
+	public const SHARE_NOTE = '{http:// /ns}note';
 
 	/**
 	 * Reference to main server object
@@ -132,13 +135,15 @@ class FilesPlugin extends ServerPlugin {
 	 * @param bool $isPublic
 	 * @param bool $downloadAttachment
 	 */
-	public function __construct(Tree $tree,
-								IConfig $config,
-								IRequest $request,
-								IPreview $previewManager,
-								IUserSession $userSession,
-								$isPublic = false,
-								$downloadAttachment = true) {
+	public function __construct(
+		Tree $tree,
+		IConfig $config,
+		IRequest $request,
+		IPreview $previewManager,
+		IUserSession $userSession,
+		$isPublic = false,
+		$downloadAttachment = true
+	) {
 		$this->tree = $tree;
 		$this->config = $config;
 		$this->request = $request;
@@ -159,7 +164,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @param \Sabre\DAV\Server $server
 	 * @return void
 	 */
-	public function initialize(\Sabre\DAV\Server $server) {
+	public function initialize(\Sabre\DAV\Server $server)
+	{
 		$server->xml->namespaceMap[self::NS_OWNCLOUD] = 'oc';
 		$server->xml->namespaceMap[self::NS_NEXTCLOUD] = 'nc';
 		$server->protectedProperties[] = self::FILEID_PROPERTYNAME;
@@ -188,7 +194,7 @@ class FilesPlugin extends ServerPlugin {
 		$this->server->on('propPatch', [$this, 'handleUpdateProperties']);
 		$this->server->on('afterBind', [$this, 'sendFileIdHeader']);
 		$this->server->on('afterWriteContent', [$this, 'sendFileIdHeader']);
-		$this->server->on('afterMethod:GET', [$this,'httpGet']);
+		$this->server->on('afterMethod:GET', [$this, 'httpGet']);
 		$this->server->on('afterMethod:GET', [$this, 'handleDownloadToken']);
 		$this->server->on('afterResponse', function ($request, ResponseInterface $response) {
 			$body = $response->getBody();
@@ -207,7 +213,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @throws Forbidden
 	 * @throws NotFound
 	 */
-	public function checkMove($source, $destination) {
+	public function checkMove($source, $destination)
+	{
 		$sourceNode = $this->tree->getNodeForPath($source);
 		if (!$sourceNode instanceof Node) {
 			return;
@@ -235,7 +242,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @param RequestInterface $request
 	 * @param ResponseInterface $response
 	 */
-	public function handleDownloadToken(RequestInterface $request, ResponseInterface $response) {
+	public function handleDownloadToken(RequestInterface $request, ResponseInterface $response)
+	{
 		$queryParams = $request->getQueryParameters();
 
 		/**
@@ -245,8 +253,10 @@ class FilesPlugin extends ServerPlugin {
 		 */
 		if (isset($queryParams['downloadStartSecret'])) {
 			$token = $queryParams['downloadStartSecret'];
-			if (!isset($token[32])
-				&& preg_match('!^[a-zA-Z0-9]+$!', $token) === 1) {
+			if (
+				!isset($token[32])
+				&& preg_match('!^[a-zA-Z0-9]+$!', $token) === 1
+			) {
 				// FIXME: use $response->setHeader() instead
 				setcookie('ocDownloadStarted', $token, time() + 20, '/');
 			}
@@ -259,7 +269,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @param RequestInterface $request
 	 * @param ResponseInterface $response
 	 */
-	public function httpGet(RequestInterface $request, ResponseInterface $response) {
+	public function httpGet(RequestInterface $request, ResponseInterface $response)
+	{
 		// Only handle valid files
 		$node = $this->tree->getNodeForPath($request->getPath());
 		if (!($node instanceof IFile)) {
@@ -268,19 +279,22 @@ class FilesPlugin extends ServerPlugin {
 
 		// adds a 'Content-Disposition: attachment' header in case no disposition
 		// header has been set before
-		if ($this->downloadAttachment &&
-			$response->getHeader('Content-Disposition') === null) {
+		if (
+			$this->downloadAttachment &&
+			$response->getHeader('Content-Disposition') === null
+		) {
 			$filename = $node->getName();
 			if ($this->request->isUserAgent(
 				[
 					Request::USER_AGENT_IE,
 					Request::USER_AGENT_ANDROID_MOBILE_CHROME,
 					Request::USER_AGENT_FREEBOX,
-				])) {
+				]
+			)) {
 				$response->addHeader('Content-Disposition', 'attachment; filename="' . rawurlencode($filename) . '"');
 			} else {
 				$response->addHeader('Content-Disposition', 'attachment; filename*=UTF-8\'\'' . rawurlencode($filename)
-													 . '; filename="' . rawurlencode($filename) . '"');
+					. '; filename="' . rawurlencode($filename) . '"');
 			}
 		}
 
@@ -300,7 +314,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @param \Sabre\DAV\INode $node
 	 * @return void
 	 */
-	public function handleGetProperties(PropFind $propFind, \Sabre\DAV\INode $node) {
+	public function handleGetProperties(PropFind $propFind, \Sabre\DAV\INode $node)
+	{
 		$httpRequest = $this->server->httpRequest;
 
 		if ($node instanceof \OCA\DAV\Connector\Sabre\Node) {
@@ -458,7 +473,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @param $ncPermissions
 	 * @return array
 	 */
-	protected function ncPermissions2ocmPermissions($ncPermissions) {
+	protected function ncPermissions2ocmPermissions($ncPermissions)
+	{
 		$ocmPermissions = [];
 
 		if ($ncPermissions & Constants::PERMISSION_SHARE) {
@@ -470,7 +486,8 @@ class FilesPlugin extends ServerPlugin {
 		}
 
 		if (($ncPermissions & Constants::PERMISSION_CREATE) ||
-			($ncPermissions & Constants::PERMISSION_UPDATE)) {
+			($ncPermissions & Constants::PERMISSION_UPDATE)
+		) {
 			$ocmPermissions[] = 'write';
 		}
 
@@ -485,7 +502,8 @@ class FilesPlugin extends ServerPlugin {
 	 *
 	 * @return void
 	 */
-	public function handleUpdateProperties($path, PropPatch $propPatch) {
+	public function handleUpdateProperties($path, PropPatch $propPatch)
+	{
 		$node = $this->tree->getNodeForPath($path);
 		if (!($node instanceof \OCA\DAV\Connector\Sabre\Node)) {
 			return;
@@ -529,7 +547,8 @@ class FilesPlugin extends ServerPlugin {
 	 * @param \Sabre\DAV\INode $node
 	 * @throws \Sabre\DAV\Exception\BadRequest
 	 */
-	public function sendFileIdHeader($filePath, \Sabre\DAV\INode $node = null) {
+	public function sendFileIdHeader($filePath, \Sabre\DAV\INode $node = null)
+	{
 		// chunked upload handling
 		if (isset($_SERVER['HTTP_OC_CHUNKED'])) {
 			[$path, $name] = \Sabre\Uri\split($filePath);

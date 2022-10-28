@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Sergio Bertolin <sbertolin@solidgear.es>
  *
@@ -31,6 +32,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 use GuzzleHttp\Client as GClient;
 use GuzzleHttp\Message\ResponseInterface;
 use PHPUnit\Framework\Assert;
@@ -40,7 +42,8 @@ use Sabre\DAV\Xml\Property\ResourceType;
 require __DIR__ . '/../../vendor/autoload.php';
 
 
-trait WebDav {
+trait WebDav
+{
 	use Sharing;
 
 	/** @var string */
@@ -57,14 +60,16 @@ trait WebDav {
 	/**
 	 * @Given /^using dav path "([^"]*)"$/
 	 */
-	public function usingDavPath($davPath) {
+	public function usingDavPath($davPath)
+	{
 		$this->davPath = $davPath;
 	}
 
 	/**
 	 * @Given /^using old dav path$/
 	 */
-	public function usingOldDavPath() {
+	public function usingOldDavPath()
+	{
 		$this->davPath = "remote.php/webdav";
 		$this->usingOldDavPath = true;
 	}
@@ -72,12 +77,14 @@ trait WebDav {
 	/**
 	 * @Given /^using new dav path$/
 	 */
-	public function usingNewDavPath() {
+	public function usingNewDavPath()
+	{
 		$this->davPath = "remote.php/dav";
 		$this->usingOldDavPath = false;
 	}
 
-	public function getDavFilesPath($user) {
+	public function getDavFilesPath($user)
+	{
 		if ($this->usingOldDavPath === true) {
 			return $this->davPath;
 		} else {
@@ -85,7 +92,8 @@ trait WebDav {
 		}
 	}
 
-	public function makeDavRequest($user, $method, $path, $headers, $body = null, $type = "files") {
+	public function makeDavRequest($user, $method, $path, $headers, $body = null, $type = "files")
+	{
 		if ($type === "files") {
 			$fullUrl = substr($this->baseUrl, 0, -4) . $this->getDavFilesPath($user) . "$path";
 		} elseif ($type === "uploads") {
@@ -112,7 +120,8 @@ trait WebDav {
 	 * @param string $fileSource
 	 * @param string $fileDestination
 	 */
-	public function userMovedFile($user, $entry, $fileSource, $fileDestination) {
+	public function userMovedFile($user, $entry, $fileSource, $fileDestination)
+	{
 		$fullUrl = substr($this->baseUrl, 0, -4) . $this->getDavFilesPath($user);
 		$headers['Destination'] = $fullUrl . $fileDestination;
 		$this->response = $this->makeDavRequest($user, "MOVE", $fileSource, $headers);
@@ -125,7 +134,8 @@ trait WebDav {
 	 * @param string $fileSource
 	 * @param string $fileDestination
 	 */
-	public function userMovesFile($user, $entry, $fileSource, $fileDestination) {
+	public function userMovesFile($user, $entry, $fileSource, $fileDestination)
+	{
 		$fullUrl = substr($this->baseUrl, 0, -4) . $this->getDavFilesPath($user);
 		$headers['Destination'] = $fullUrl . $fileDestination;
 		try {
@@ -141,7 +151,8 @@ trait WebDav {
 	 * @param string $fileSource
 	 * @param string $fileDestination
 	 */
-	public function userCopiesFileTo($user, $fileSource, $fileDestination) {
+	public function userCopiesFileTo($user, $fileSource, $fileDestination)
+	{
 		$fullUrl = substr($this->baseUrl, 0, -4) . $this->getDavFilesPath($user);
 		$headers['Destination'] = $fullUrl . $fileDestination;
 		try {
@@ -157,7 +168,8 @@ trait WebDav {
 	 * @param string $fileSource
 	 * @param string $range
 	 */
-	public function downloadFileWithRange($fileSource, $range) {
+	public function downloadFileWithRange($fileSource, $range)
+	{
 		$headers['Range'] = $range;
 		$this->response = $this->makeDavRequest($this->currentUser, "GET", $fileSource, $headers);
 	}
@@ -166,7 +178,8 @@ trait WebDav {
 	 * @When /^Downloading last public shared file with range "([^"]*)"$/
 	 * @param string $range
 	 */
-	public function downloadPublicFileWithRange($range) {
+	public function downloadPublicFileWithRange($range)
+	{
 		$token = $this->lastShareData->data->token;
 		$fullUrl = substr($this->baseUrl, 0, -4) . "public.php/webdav";
 
@@ -184,7 +197,8 @@ trait WebDav {
 	 * @When /^Downloading last public shared file inside a folder "([^"]*)" with range "([^"]*)"$/
 	 * @param string $range
 	 */
-	public function downloadPublicFileInsideAFolderWithRange($path, $range) {
+	public function downloadPublicFileInsideAFolderWithRange($path, $range)
+	{
 		$token = $this->lastShareData->data->token;
 		$fullUrl = substr($this->baseUrl, 0, -4) . "public.php/webdav" . "$path";
 
@@ -203,7 +217,8 @@ trait WebDav {
 	 * @Then /^Downloaded content should be "([^"]*)"$/
 	 * @param string $content
 	 */
-	public function downloadedContentShouldBe($content) {
+	public function downloadedContentShouldBe($content)
+	{
 		Assert::assertEquals($content, (string)$this->response->getBody());
 	}
 
@@ -214,9 +229,10 @@ trait WebDav {
 	 * @param string $prop
 	 * @param string $value
 	 */
-	public function checkPropForFile($file, $prefix, $prop, $value) {
+	public function checkPropForFile($file, $prefix, $prop, $value)
+	{
 		$elementList = $this->propfindFile($this->currentUser, $file, "<$prefix:$prop/>");
-		$property = $elementList['/'.$this->getDavFilesPath($this->currentUser).$file][200]["{DAV:}$prop"];
+		$property = $elementList['/' . $this->getDavFilesPath($this->currentUser) . $file][200]["{DAV:}$prop"];
 		Assert::assertEquals($property, $value);
 	}
 
@@ -226,7 +242,8 @@ trait WebDav {
 	 * @param string $range
 	 * @param string $content
 	 */
-	public function downloadedContentWhenDownloadindShouldBe($fileSource, $range, $content) {
+	public function downloadedContentWhenDownloadindShouldBe($fileSource, $range, $content)
+	{
 		$this->downloadFileWithRange($fileSource, $range);
 		$this->downloadedContentShouldBe($content);
 	}
@@ -235,7 +252,8 @@ trait WebDav {
 	 * @When Downloading file :fileName
 	 * @param string $fileName
 	 */
-	public function downloadingFile($fileName) {
+	public function downloadingFile($fileName)
+	{
 		try {
 			$this->response = $this->makeDavRequest($this->currentUser, 'GET', $fileName, []);
 		} catch (\GuzzleHttp\Exception\ClientException $e) {
@@ -248,7 +266,8 @@ trait WebDav {
 	 * @param int $start
 	 * @throws \Exception
 	 */
-	public function downloadedContentShouldStartWith($start) {
+	public function downloadedContentShouldStartWith($start)
+	{
 		if (strpos($this->response->getBody()->getContents(), $start) !== 0) {
 			throw new \Exception(
 				sprintf(
@@ -267,7 +286,8 @@ trait WebDav {
 	 * @param string $path
 	 * @param \Behat\Gherkin\Node\TableNode|null $propertiesTable
 	 */
-	public function asGetsPropertiesOfFolderWith($user, $elementType, $path, $propertiesTable) {
+	public function asGetsPropertiesOfFolderWith($user, $elementType, $path, $propertiesTable)
+	{
 		$properties = null;
 		if ($propertiesTable instanceof \Behat\Gherkin\Node\TableNode) {
 			foreach ($propertiesTable->getRows() as $row) {
@@ -284,7 +304,8 @@ trait WebDav {
 	 * @param string $path
 	 * @param \Behat\Gherkin\Node\TableNode|null $propertiesTable
 	 */
-	public function asTheFileOrFolderDoesNotExist($user, $entry, $path) {
+	public function asTheFileOrFolderDoesNotExist($user, $entry, $path)
+	{
 		$client = $this->getSabreClient($user);
 		$response = $client->request('HEAD', $this->makeSabrePath($user, $path));
 		if ($response['statusCode'] !== 404) {
@@ -300,7 +321,8 @@ trait WebDav {
 	 * @param string $entry
 	 * @param string $path
 	 */
-	public function asTheFileOrFolderExists($user, $entry, $path) {
+	public function asTheFileOrFolderExists($user, $entry, $path)
+	{
 		$this->response = $this->listFolder($user, $path, 0);
 	}
 
@@ -310,7 +332,8 @@ trait WebDav {
 	 * @param string $expectedValue
 	 * @throws \Exception
 	 */
-	public function theSingleResponseShouldContainAPropertyWithValue($key, $expectedValue) {
+	public function theSingleResponseShouldContainAPropertyWithValue($key, $expectedValue)
+	{
 		$keys = $this->response;
 		if (!array_key_exists($key, $keys)) {
 			throw new \Exception("Cannot find property \"$key\" with \"$expectedValue\"");
@@ -333,7 +356,8 @@ trait WebDav {
 	/**
 	 * @Then the response should contain a share-types property with
 	 */
-	public function theResponseShouldContainAShareTypesPropertyWith($table) {
+	public function theResponseShouldContainAShareTypesPropertyWith($table)
+	{
 		$keys = $this->response;
 		if (!array_key_exists('{http://owncloud.org/ns}share-types', $keys)) {
 			throw new \Exception("Cannot find property \"{http://owncloud.org/ns}share-types\"");
@@ -368,7 +392,8 @@ trait WebDav {
 	 * @param string $property
 	 * @throws \Exception
 	 */
-	public function theResponseShouldContainAnEmptyProperty($property) {
+	public function theResponseShouldContainAnEmptyProperty($property)
+	{
 		$properties = $this->response;
 		if (!array_key_exists($property, $properties)) {
 			throw new \Exception("Cannot find property \"$property\"");
@@ -380,7 +405,8 @@ trait WebDav {
 	}
 
 	/*Returns the elements of a propfind, $folderDepth requires 1 to see elements without children*/
-	public function listFolder($user, $path, $folderDepth, $properties = null) {
+	public function listFolder($user, $path, $folderDepth, $properties = null)
+	{
 		$client = $this->getSabreClient($user);
 		if (!$properties) {
 			$properties = [
@@ -399,13 +425,14 @@ trait WebDav {
 	 * @param string $properties properties which needs to be included in the report
 	 * @param string $filterRules filter-rules to choose what needs to appear in the report
 	 */
-	public function propfindFile($user, $path, $properties = '') {
+	public function propfindFile($user, $path, $properties = '')
+	{
 		$client = $this->getSabreClient($user);
 
 		$body = '<?xml version="1.0" encoding="utf-8" ?>
 					<d:propfind  xmlns:d="DAV:"
 						xmlns:oc="http://owncloud.org/ns"
-						xmlns:nc="http://nextcloud.org/ns"
+						xmlns:nc="http:// /ns"
 						xmlns:ocs="http://open-collaboration-services.org/ns">
 						<d:prop>
 							' . $properties . '
@@ -423,7 +450,8 @@ trait WebDav {
 	 * @param string $properties properties which needs to be included in the report
 	 * @param string $filterRules filter-rules to choose what needs to appear in the report
 	 */
-	public function reportFolder($user, $path, $properties, $filterRules) {
+	public function reportFolder($user, $path, $properties, $filterRules)
+	{
 		$client = $this->getSabreClient($user);
 
 		$body = '<?xml version="1.0" encoding="utf-8" ?>
@@ -441,7 +469,8 @@ trait WebDav {
 		return $parsedResponse;
 	}
 
-	public function makeSabrePath($user, $path, $type = 'files') {
+	public function makeSabrePath($user, $path, $type = 'files')
+	{
 		if ($type === 'files') {
 			return $this->encodePath($this->getDavFilesPath($user) . $path);
 		} else {
@@ -449,7 +478,8 @@ trait WebDav {
 		}
 	}
 
-	public function getSabreClient($user) {
+	public function getSabreClient($user)
+	{
 		$fullUrl = substr($this->baseUrl, 0, -4);
 
 		$settings = [
@@ -472,7 +502,8 @@ trait WebDav {
 	 * @param string $user
 	 * @param \Behat\Gherkin\Node\TableNode|null $expectedElements
 	 */
-	public function checkElementList($user, $expectedElements) {
+	public function checkElementList($user, $expectedElements)
+	{
 		$elementList = $this->listFolder($user, '/', 3);
 		if ($expectedElements instanceof \Behat\Gherkin\Node\TableNode) {
 			$elementRows = $expectedElements->getRows();
@@ -492,7 +523,8 @@ trait WebDav {
 	 * @param string $source
 	 * @param string $destination
 	 */
-	public function userUploadsAFileTo($user, $source, $destination) {
+	public function userUploadsAFileTo($user, $source, $destination)
+	{
 		$file = \GuzzleHttp\Psr7\Utils::streamFor(fopen($source, 'r'));
 		try {
 			$this->response = $this->makeDavRequest($user, "PUT", $destination, [], $file);
@@ -511,7 +543,8 @@ trait WebDav {
 	 * @param string $bytes
 	 * @param string $destination
 	 */
-	public function userAddsAFileTo($user, $bytes, $destination) {
+	public function userAddsAFileTo($user, $bytes, $destination)
+	{
 		$filename = "filespecificSize.txt";
 		$this->createFileSpecificSize($filename, $bytes);
 		Assert::assertEquals(1, file_exists("work/$filename"));
@@ -524,7 +557,8 @@ trait WebDav {
 	/**
 	 * @When User :user uploads file with content :content to :destination
 	 */
-	public function userUploadsAFileWithContentTo($user, $content, $destination) {
+	public function userUploadsAFileWithContentTo($user, $content, $destination)
+	{
 		$file = \GuzzleHttp\Psr7\Utils::streamFor($content);
 		try {
 			$this->response = $this->makeDavRequest($user, "PUT", $destination, [], $file);
@@ -543,7 +577,8 @@ trait WebDav {
 	 * @param string $type
 	 * @param string $file
 	 */
-	public function userDeletesFile($user, $type, $file) {
+	public function userDeletesFile($user, $type, $file)
+	{
 		try {
 			$this->response = $this->makeDavRequest($user, 'DELETE', $file, []);
 		} catch (\GuzzleHttp\Exception\ServerException $e) {
@@ -560,7 +595,8 @@ trait WebDav {
 	 * @param string $user
 	 * @param string $destination
 	 */
-	public function userCreatedAFolder($user, $destination) {
+	public function userCreatedAFolder($user, $destination)
+	{
 		try {
 			$destination = '/' . ltrim($destination, '/');
 			$this->response = $this->makeDavRequest($user, "MKCOL", $destination, []);
@@ -581,7 +617,8 @@ trait WebDav {
 	 * @param string $data
 	 * @param string $destination
 	 */
-	public function userUploadsChunkFileOfWithToWithChecksum($user, $num, $total, $data, $destination) {
+	public function userUploadsChunkFileOfWithToWithChecksum($user, $num, $total, $data, $destination)
+	{
 		$num -= 1;
 		$data = \GuzzleHttp\Psr7\Utils::streamFor($data);
 		$file = $destination . '-chunking-42-' . $total . '-' . $num;
@@ -598,32 +635,33 @@ trait WebDav {
 	 * @param string $name3
 	 * @param string $content3
 	 */
-	public function userUploadsBulkedFiles($user, $name1, $content1, $name2, $content2, $name3, $content3) {
+	public function userUploadsBulkedFiles($user, $name1, $content1, $name2, $content2, $name3, $content3)
+	{
 		$boundary = "boundary_azertyuiop";
 
 		$body = "";
-		$body .= '--'.$boundary."\r\n";
-		$body .= "X-File-Path: ".$name1."\r\n";
+		$body .= '--' . $boundary . "\r\n";
+		$body .= "X-File-Path: " . $name1 . "\r\n";
 		$body .= "X-File-MD5: f6a6263167c92de8644ac998b3c4e4d1\r\n";
 		$body .= "X-OC-Mtime: 1111111111\r\n";
-		$body .= "Content-Length: ".strlen($content1)."\r\n";
+		$body .= "Content-Length: " . strlen($content1) . "\r\n";
 		$body .= "\r\n";
-		$body .= $content1."\r\n";
-		$body .= '--'.$boundary."\r\n";
-		$body .= "X-File-Path: ".$name2."\r\n";
+		$body .= $content1 . "\r\n";
+		$body .= '--' . $boundary . "\r\n";
+		$body .= "X-File-Path: " . $name2 . "\r\n";
 		$body .= "X-File-MD5: 87c7d4068be07d390a1fffd21bf1e944\r\n";
 		$body .= "X-OC-Mtime: 2222222222\r\n";
-		$body .= "Content-Length: ".strlen($content2)."\r\n";
+		$body .= "Content-Length: " . strlen($content2) . "\r\n";
 		$body .= "\r\n";
-		$body .= $content2."\r\n";
-		$body .= '--'.$boundary."\r\n";
-		$body .= "X-File-Path: ".$name3."\r\n";
+		$body .= $content2 . "\r\n";
+		$body .= '--' . $boundary . "\r\n";
+		$body .= "X-File-Path: " . $name3 . "\r\n";
 		$body .= "X-File-MD5: e86a1cf0678099986a901c79086f5617\r\n";
 		$body .= "X-File-Mtime: 3333333333\r\n";
-		$body .= "Content-Length: ".strlen($content3)."\r\n";
+		$body .= "Content-Length: " . strlen($content3) . "\r\n";
 		$body .= "\r\n";
-		$body .= $content3."\r\n";
-		$body .= '--'.$boundary."--\r\n";
+		$body .= $content3 . "\r\n";
+		$body .= '--' . $boundary . "--\r\n";
 
 		$stream = fopen('php://temp', 'r+');
 		fwrite($stream, $body);
@@ -633,7 +671,7 @@ trait WebDav {
 		$options = [
 			'auth' => [$user, $this->regularUser],
 			'headers' => [
-				'Content-Type' => 'multipart/related; boundary='.$boundary,
+				'Content-Type' => 'multipart/related; boundary=' . $boundary,
 				'Content-Length' => (string)strlen($body),
 			],
 			'body' => $body
@@ -645,7 +683,8 @@ trait WebDav {
 	/**
 	 * @Given user :user creates a new chunking upload with id :id
 	 */
-	public function userCreatesANewChunkingUploadWithId($user, $id) {
+	public function userCreatesANewChunkingUploadWithId($user, $id)
+	{
 		$destination = '/uploads/' . $user . '/' . $id;
 		$this->makeDavRequest($user, 'MKCOL', $destination, [], null, "uploads");
 	}
@@ -653,7 +692,8 @@ trait WebDav {
 	/**
 	 * @Given user :user uploads new chunk file :num with :data to id :id
 	 */
-	public function userUploadsNewChunkFileOfWithToId($user, $num, $data, $id) {
+	public function userUploadsNewChunkFileOfWithToId($user, $num, $data, $id)
+	{
 		$data = \GuzzleHttp\Psr7\Utils::streamFor($data);
 		$destination = '/uploads/' . $user . '/' . $id . '/' . $num;
 		$this->makeDavRequest($user, 'PUT', $destination, [], $data, "uploads");
@@ -662,7 +702,8 @@ trait WebDav {
 	/**
 	 * @Given user :user moves new chunk file with id :id to :dest
 	 */
-	public function userMovesNewChunkFileWithIdToMychunkedfile($user, $id, $dest) {
+	public function userMovesNewChunkFileWithIdToMychunkedfile($user, $id, $dest)
+	{
 		$source = '/uploads/' . $user . '/' . $id . '/.file';
 		$destination = substr($this->baseUrl, 0, -4) . $this->getDavFilesPath($user) . $dest;
 		$this->makeDavRequest($user, 'MOVE', $source, [
@@ -673,7 +714,8 @@ trait WebDav {
 	/**
 	 * @Then user :user moves new chunk file with id :id to :dest with size :size
 	 */
-	public function userMovesNewChunkFileWithIdToMychunkedfileWithSize($user, $id, $dest, $size) {
+	public function userMovesNewChunkFileWithIdToMychunkedfileWithSize($user, $id, $dest, $size)
+	{
 		$source = '/uploads/' . $user . '/' . $id . '/.file';
 		$destination = substr($this->baseUrl, 0, -4) . $this->getDavFilesPath($user) . $dest;
 
@@ -690,7 +732,8 @@ trait WebDav {
 	/**
 	 * @Given /^Downloading file "([^"]*)" as "([^"]*)"$/
 	 */
-	public function downloadingFileAs($fileName, $user) {
+	public function downloadingFileAs($fileName, $user)
+	{
 		try {
 			$this->response = $this->makeDavRequest($user, 'GET', $fileName, []);
 		} catch (\GuzzleHttp\Exception\ServerException $e) {
@@ -708,7 +751,8 @@ trait WebDav {
 	 * @param string $path to encode
 	 * @return string encoded path
 	 */
-	private function encodePath($path) {
+	private function encodePath($path)
+	{
 		// slashes need to stay
 		return str_replace('%2F', '/', rawurlencode($path));
 	}
@@ -716,19 +760,22 @@ trait WebDav {
 	/**
 	 * @When user :user favorites element :path
 	 */
-	public function userFavoritesElement($user, $path) {
+	public function userFavoritesElement($user, $path)
+	{
 		$this->response = $this->changeFavStateOfAnElement($user, $path, 1, 0, null);
 	}
 
 	/**
 	 * @When user :user unfavorites element :path
 	 */
-	public function userUnfavoritesElement($user, $path) {
+	public function userUnfavoritesElement($user, $path)
+	{
 		$this->response = $this->changeFavStateOfAnElement($user, $path, 0, 0, null);
 	}
 
 	/*Set the elements of a proppatch, $folderDepth requires 1 to see elements without children*/
-	public function changeFavStateOfAnElement($user, $path, $favOrUnfav, $folderDepth, $properties = null) {
+	public function changeFavStateOfAnElement($user, $path, $favOrUnfav, $folderDepth, $properties = null)
+	{
 		$fullUrl = substr($this->baseUrl, 0, -4);
 		$settings = [
 			'baseUri' => $fullUrl,
@@ -755,7 +802,8 @@ trait WebDav {
 	/**
 	 * @Given user :user stores etag of element :path
 	 */
-	public function userStoresEtagOfElement($user, $path) {
+	public function userStoresEtagOfElement($user, $path)
+	{
 		$propertiesTable = new \Behat\Gherkin\Node\TableNode([['{DAV:}getetag']]);
 		$this->asGetsPropertiesOfFolderWith($user, 'entry', $path, $propertiesTable);
 		$pathETAG[$path] = $this->response['{DAV:}getetag'];
@@ -765,7 +813,8 @@ trait WebDav {
 	/**
 	 * @Then etag of element :path of user :user has not changed
 	 */
-	public function checkIfETAGHasNotChanged($path, $user) {
+	public function checkIfETAGHasNotChanged($path, $user)
+	{
 		$propertiesTable = new \Behat\Gherkin\Node\TableNode([['{DAV:}getetag']]);
 		$this->asGetsPropertiesOfFolderWith($user, 'entry', $path, $propertiesTable);
 		Assert::assertEquals($this->response['{DAV:}getetag'], $this->storedETAG[$user][$path]);
@@ -774,7 +823,8 @@ trait WebDav {
 	/**
 	 * @Then etag of element :path of user :user has changed
 	 */
-	public function checkIfETAGHasChanged($path, $user) {
+	public function checkIfETAGHasChanged($path, $user)
+	{
 		$propertiesTable = new \Behat\Gherkin\Node\TableNode([['{DAV:}getetag']]);
 		$this->asGetsPropertiesOfFolderWith($user, 'entry', $path, $propertiesTable);
 		Assert::assertNotEquals($this->response['{DAV:}getetag'], $this->storedETAG[$user][$path]);
@@ -783,7 +833,8 @@ trait WebDav {
 	/**
 	 * @When Connecting to dav endpoint
 	 */
-	public function connectingToDavEndpoint() {
+	public function connectingToDavEndpoint()
+	{
 		try {
 			$this->response = $this->makeDavRequest(null, 'PROPFIND', '', []);
 		} catch (\GuzzleHttp\Exception\ClientException $e) {
@@ -794,7 +845,8 @@ trait WebDav {
 	/**
 	 * @Then there are no duplicate headers
 	 */
-	public function thereAreNoDuplicateHeaders() {
+	public function thereAreNoDuplicateHeaders()
+	{
 		$headers = $this->response->getHeaders();
 		foreach ($headers as $headerName => $headerValues) {
 			// if a header has multiple values, they must be different
@@ -810,11 +862,14 @@ trait WebDav {
 	 * @param string $folder
 	 * @param \Behat\Gherkin\Node\TableNode|null $expectedElements
 	 */
-	public function checkFavoritedElements($user, $folder, $expectedElements) {
-		$elementList = $this->reportFolder($user,
+	public function checkFavoritedElements($user, $folder, $expectedElements)
+	{
+		$elementList = $this->reportFolder(
+			$user,
 			$folder,
 			'<oc:favorite/>',
-			'<oc:favorite>1</oc:favorite>');
+			'<oc:favorite>1</oc:favorite>'
+		);
 		if ($expectedElements instanceof \Behat\Gherkin\Node\TableNode) {
 			$elementRows = $expectedElements->getRows();
 			$elementsSimplified = $this->simplifyArray($elementRows);
@@ -832,7 +887,8 @@ trait WebDav {
 	 * @param string $user
 	 * @param string $folder
 	 */
-	public function userDeletesEverythingInFolder($user, $folder) {
+	public function userDeletesEverythingInFolder($user, $folder)
+	{
 		$elementList = $this->listFolder($user, $folder, 1);
 		$elementListKeys = array_keys($elementList);
 		array_shift($elementListKeys);
@@ -851,7 +907,8 @@ trait WebDav {
 	 * @param string $path
 	 * @return int
 	 */
-	private function getFileIdForPath($user, $path) {
+	private function getFileIdForPath($user, $path)
+	{
 		$propertiesTable = new \Behat\Gherkin\Node\TableNode([["{http://owncloud.org/ns}fileid"]]);
 		$this->asGetsPropertiesOfFolderWith($user, 'file', $path, $propertiesTable);
 		return (int)$this->response['{http://owncloud.org/ns}fileid'];
@@ -862,7 +919,8 @@ trait WebDav {
 	 * @param string $user
 	 * @param string $path
 	 */
-	public function userStoresFileIdForPath($user, $path) {
+	public function userStoresFileIdForPath($user, $path)
+	{
 		$this->storedFileID = $this->getFileIdForPath($user, $path);
 	}
 
@@ -871,7 +929,8 @@ trait WebDav {
 	 * @param string $user
 	 * @param string $path
 	 */
-	public function userChecksFileIdForPath($user, $path) {
+	public function userChecksFileIdForPath($user, $path)
+	{
 		$currentFileID = $this->getFileIdForPath($user, $path);
 		Assert::assertEquals($currentFileID, $this->storedFileID);
 	}

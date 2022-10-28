@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  * @copyright Copyright (c) 2016, Lukas Reschke <lukas@statuscode.ch>
@@ -27,20 +28,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OC\App;
 
 use OCP\ICache;
 use function libxml_disable_entity_loader;
 use function simplexml_load_file;
 
-class InfoParser {
+class InfoParser
+{
 	/** @var \OCP\ICache|null */
 	private $cache;
 
 	/**
 	 * @param ICache|null $cache
 	 */
-	public function __construct(ICache $cache = null) {
+	public function __construct(ICache $cache = null)
+	{
 		$this->cache = $cache;
 	}
 
@@ -48,7 +52,8 @@ class InfoParser {
 	 * @param string $file the xml file to be loaded
 	 * @return null|array where null is an indicator for an error
 	 */
-	public function parse($file) {
+	public function parse($file)
+	{
 		if (!file_exists($file)) {
 			return null;
 		}
@@ -191,7 +196,8 @@ class InfoParser {
 		if (isset($array['activity']['providers']['provider']) && is_array($array['activity']['providers']['provider'])) {
 			$array['activity']['providers'] = $array['activity']['providers']['provider'];
 		}
-		if (isset($array['collaboration']['collaborators']['searchPlugins']['searchPlugin'])
+		if (
+			isset($array['collaboration']['collaborators']['searchPlugins']['searchPlugin'])
 			&& is_array($array['collaboration']['collaborators']['searchPlugins']['searchPlugin'])
 			&& !isset($array['collaboration']['collaborators']['searchPlugins']['searchPlugin']['class'])
 		) {
@@ -224,7 +230,8 @@ class InfoParser {
 	 * @param $data
 	 * @return bool
 	 */
-	private function isNavigationItem($data): bool {
+	private function isNavigationItem($data): bool
+	{
 		return isset($data['name'], $data['route']);
 	}
 
@@ -232,7 +239,8 @@ class InfoParser {
 	 * @param \SimpleXMLElement $xml
 	 * @return array
 	 */
-	public function xmlToArray($xml) {
+	public function xmlToArray($xml)
+	{
 		if (!$xml->children()) {
 			return (string)$xml;
 		}

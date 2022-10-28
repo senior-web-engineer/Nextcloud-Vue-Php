@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -26,6 +27,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\CardDAV;
 
 use OC\Accounts\AccountManager;
@@ -39,7 +41,8 @@ use Sabre\DAV\Xml\Service;
 use Sabre\HTTP\ClientHttpException;
 use Sabre\VObject\Reader;
 
-class SyncService {
+class SyncService
+{
 
 	/** @var CardDavBackend */
 	private $backend;
@@ -67,7 +70,8 @@ class SyncService {
 	 * @param ILogger $logger
 	 * @param AccountManager $accountManager
 	 */
-	public function __construct(CardDavBackend $backend, IUserManager $userManager, ILogger $logger, Converter $converter) {
+	public function __construct(CardDavBackend $backend, IUserManager $userManager, ILogger $logger, Converter $converter)
+	{
 		$this->backend = $backend;
 		$this->userManager = $userManager;
 		$this->logger = $logger;
@@ -87,7 +91,8 @@ class SyncService {
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function syncRemoteAddressBook($url, $userName, $addressBookUrl, $sharedSecret, $syncToken, $targetBookId, $targetPrincipal, $targetProperties) {
+	public function syncRemoteAddressBook($url, $userName, $addressBookUrl, $sharedSecret, $syncToken, $targetBookId, $targetPrincipal, $targetProperties)
+	{
 		// 1. create addressbook
 		$book = $this->ensureSystemAddressBookExists($targetPrincipal, $targetBookId, $targetProperties);
 		$addressBookId = $book['id'];
@@ -131,7 +136,8 @@ class SyncService {
 	 * @return array|null
 	 * @throws \Sabre\DAV\Exception\BadRequest
 	 */
-	public function ensureSystemAddressBookExists($principal, $id, $properties) {
+	public function ensureSystemAddressBookExists($principal, $id, $properties)
+	{
 		$book = $this->backend->getAddressBooksByUri($principal, $id);
 		if (!is_null($book)) {
 			return $book;
@@ -146,7 +152,8 @@ class SyncService {
 	 *
 	 * @return string
 	 */
-	protected function getCertPath() {
+	protected function getCertPath()
+	{
 
 		// we already have a valid certPath
 		if ($this->certPath !== '') {
@@ -169,7 +176,8 @@ class SyncService {
 	 * @param string $sharedSecret
 	 * @return Client
 	 */
-	protected function getClient($url, $userName, $sharedSecret) {
+	protected function getClient($url, $userName, $sharedSecret)
+	{
 		$settings = [
 			'baseUri' => $url . '/',
 			'userName' => $userName,
@@ -194,7 +202,8 @@ class SyncService {
 	 * @param string $syncToken
 	 * @return array
 	 */
-	protected function requestSyncReport($url, $userName, $addressBookUrl, $sharedSecret, $syncToken) {
+	protected function requestSyncReport($url, $userName, $addressBookUrl, $sharedSecret, $syncToken)
+	{
 		$client = $this->getClient($url, $userName, $sharedSecret);
 
 		$body = $this->buildSyncCollectionRequestBody($syncToken);
@@ -213,7 +222,8 @@ class SyncService {
 	 * @param string $resourcePath
 	 * @return array
 	 */
-	protected function download($url, $userName, $sharedSecret, $resourcePath) {
+	protected function download($url, $userName, $sharedSecret, $resourcePath)
+	{
 		$client = $this->getClient($url, $userName, $sharedSecret);
 		return $client->request('GET', $resourcePath);
 	}
@@ -222,7 +232,8 @@ class SyncService {
 	 * @param string|null $syncToken
 	 * @return string
 	 */
-	private function buildSyncCollectionRequestBody($syncToken) {
+	private function buildSyncCollectionRequestBody($syncToken)
+	{
 		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$dom->formatOutput = true;
 		$root = $dom->createElementNS('DAV:', 'd:sync-collection');
@@ -244,7 +255,8 @@ class SyncService {
 	 * @return array
 	 * @throws \Sabre\Xml\ParseException
 	 */
-	private function parseMultiStatus($body) {
+	private function parseMultiStatus($body)
+	{
 		$xml = new Service();
 
 		/** @var MultiStatus $multiStatus */
@@ -261,7 +273,8 @@ class SyncService {
 	/**
 	 * @param IUser $user
 	 */
-	public function updateUser(IUser $user) {
+	public function updateUser(IUser $user)
+	{
 		$systemAddressBook = $this->getLocalSystemAddressBook();
 		$addressBookId = $systemAddressBook['id'];
 		$name = $user->getBackendClassName();
@@ -291,7 +304,8 @@ class SyncService {
 	/**
 	 * @param IUser|string $userOrCardId
 	 */
-	public function deleteUser($userOrCardId) {
+	public function deleteUser($userOrCardId)
+	{
 		$systemAddressBook = $this->getLocalSystemAddressBook();
 		if ($userOrCardId instanceof IUser) {
 			$name = $userOrCardId->getBackendClassName();
@@ -305,7 +319,8 @@ class SyncService {
 	/**
 	 * @return array|null
 	 */
-	public function getLocalSystemAddressBook() {
+	public function getLocalSystemAddressBook()
+	{
 		if (is_null($this->localSystemAddressBook)) {
 			$systemPrincipal = "principals/system/system";
 			$this->localSystemAddressBook = $this->ensureSystemAddressBookExists($systemPrincipal, 'system', [
@@ -316,7 +331,8 @@ class SyncService {
 		return $this->localSystemAddressBook;
 	}
 
-	public function syncInstance(\Closure $progressCallback = null) {
+	public function syncInstance(\Closure $progressCallback = null)
+	{
 		$systemAddressBook = $this->getLocalSystemAddressBook();
 		$this->userManager->callForAllUsers(function ($user) use ($systemAddressBook, $progressCallback) {
 			$this->updateUser($user);

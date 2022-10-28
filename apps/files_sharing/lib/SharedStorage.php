@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -30,6 +31,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Files\Cache\FailedCache;
@@ -52,7 +54,8 @@ use OCP\Share\IShare;
 /**
  * Convert target path to source path and pass the function call to the correct storage provider
  */
-class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedStorage, IDisableEncryptionStorage {
+class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedStorage, IDisableEncryptionStorage
+{
 
 	/** @var \OCP\Share\IShare */
 	private $superShare;
@@ -88,7 +91,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	/** @var boolean */
 	private $sharingDisabledForUser;
 
-	public function __construct($arguments) {
+	public function __construct($arguments)
+	{
 		$this->ownerView = $arguments['ownerView'];
 		$this->logger = \OC::$server->getLogger();
 
@@ -111,7 +115,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	/**
 	 * @return ICacheEntry
 	 */
-	private function getSourceRootInfo() {
+	private function getSourceRootInfo()
+	{
 		if (is_null($this->sourceRootInfo)) {
 			if (is_null($this->superShare->getNodeCacheEntry())) {
 				$this->init();
@@ -123,7 +128,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 		return $this->sourceRootInfo;
 	}
 
-	private function init() {
+	private function init()
+	{
 		if ($this->initialized) {
 			return;
 		}
@@ -162,7 +168,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	/**
 	 * @inheritdoc
 	 */
-	public function instanceOfStorage($class): bool {
+	public function instanceOfStorage($class): bool
+	{
 		if ($class === '\OC\Files\Storage\Common') {
 			return true;
 		}
@@ -175,11 +182,13 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	/**
 	 * @return string
 	 */
-	public function getShareId() {
+	public function getShareId()
+	{
 		return $this->superShare->getId();
 	}
 
-	private function isValid(): bool {
+	private function isValid(): bool
+	{
 		return $this->getSourceRootInfo() && ($this->getSourceRootInfo()->getPermissions() & Constants::PERMISSION_SHARE) === Constants::PERMISSION_SHARE;
 	}
 
@@ -188,7 +197,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 *
 	 * @return string
 	 */
-	public function getId(): string {
+	public function getId(): string
+	{
 		return 'shared::' . $this->getMountPoint();
 	}
 
@@ -198,7 +208,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 * @param string $target Shared target file path
 	 * @return int CRUDS permissions granted
 	 */
-	public function getPermissions($target = ''): int {
+	public function getPermissions($target = ''): int
+	{
 		if (!$this->isValid()) {
 			return 0;
 		}
@@ -216,11 +227,13 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 		return $permissions;
 	}
 
-	public function isCreatable($path): bool {
+	public function isCreatable($path): bool
+	{
 		return (bool)($this->getPermissions($path) & \OCP\Constants::PERMISSION_CREATE);
 	}
 
-	public function isReadable($path): bool {
+	public function isReadable($path): bool
+	{
 		if (!$this->isValid()) {
 			return false;
 		}
@@ -233,22 +246,26 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 		return $storage->isReadable($internalPath);
 	}
 
-	public function isUpdatable($path): bool {
+	public function isUpdatable($path): bool
+	{
 		return (bool)($this->getPermissions($path) & \OCP\Constants::PERMISSION_UPDATE);
 	}
 
-	public function isDeletable($path): bool {
+	public function isDeletable($path): bool
+	{
 		return (bool)($this->getPermissions($path) & \OCP\Constants::PERMISSION_DELETE);
 	}
 
-	public function isSharable($path): bool {
+	public function isSharable($path): bool
+	{
 		if (\OCP\Util::isSharingDisabledForUser() || !\OC\Share\Share::isResharingAllowed()) {
 			return false;
 		}
 		return (bool)($this->getPermissions($path) & \OCP\Constants::PERMISSION_SHARE);
 	}
 
-	public function fopen($path, $mode) {
+	public function fopen($path, $mode)
+	{
 		$source = $this->getUnjailedPath($path);
 		switch ($mode) {
 			case 'r+':
@@ -307,7 +324,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 * @param string $path2
 	 * @return bool
 	 */
-	public function rename($path1, $path2): bool {
+	public function rename($path1, $path2): bool
+	{
 		$this->init();
 		$isPartFile = pathinfo($path1, PATHINFO_EXTENSION) === 'part';
 		$targetExists = $this->file_exists($path2);
@@ -331,14 +349,16 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 *
 	 * @return string
 	 */
-	public function getMountPoint(): string {
+	public function getMountPoint(): string
+	{
 		return $this->superShare->getTarget();
 	}
 
 	/**
 	 * @param string $path
 	 */
-	public function setMountPoint($path): void {
+	public function setMountPoint($path): void
+	{
 		$this->superShare->setTarget($path);
 
 		foreach ($this->groupedShares as $share) {
@@ -351,14 +371,16 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 *
 	 * @return string
 	 */
-	public function getSharedFrom(): string {
+	public function getSharedFrom(): string
+	{
 		return $this->superShare->getShareOwner();
 	}
 
 	/**
 	 * @return \OCP\Share\IShare
 	 */
-	public function getShare(): IShare {
+	public function getShare(): IShare
+	{
 		return $this->superShare;
 	}
 
@@ -367,11 +389,13 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 *
 	 * @return string
 	 */
-	public function getItemType(): string {
+	public function getItemType(): string
+	{
 		return $this->superShare->getNodeType();
 	}
 
-	public function getCache($path = '', $storage = null) {
+	public function getCache($path = '', $storage = null)
+	{
 		if ($this->cache) {
 			return $this->cache;
 		}
@@ -391,18 +415,21 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 		return $this->cache;
 	}
 
-	public function getScanner($path = '', $storage = null) {
+	public function getScanner($path = '', $storage = null)
+	{
 		if (!$storage) {
 			$storage = $this;
 		}
 		return new \OCA\Files_Sharing\Scanner($storage);
 	}
 
-	public function getOwner($path): string {
+	public function getOwner($path): string
+	{
 		return $this->superShare->getShareOwner();
 	}
 
-	public function getWatcher($path = '', $storage = null): Watcher {
+	public function getWatcher($path = '', $storage = null): Watcher
+	{
 		$mountManager = \OC::$server->getMountManager();
 
 		// Get node informations
@@ -425,7 +452,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 *
 	 * @return bool
 	 */
-	public function unshareStorage(): bool {
+	public function unshareStorage(): bool
+	{
 		foreach ($this->groupedShares as $share) {
 			\OC::$server->getShareManager()->deleteFromSelf($share, $this->user);
 		}
@@ -438,7 +466,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 * @param \OCP\Lock\ILockingProvider $provider
 	 * @throws \OCP\Lock\LockedException
 	 */
-	public function acquireLock($path, $type, ILockingProvider $provider) {
+	public function acquireLock($path, $type, ILockingProvider $provider)
+	{
 		/** @var \OCP\Files\Storage $targetStorage */
 		[$targetStorage, $targetInternalPath] = $this->resolvePath($path);
 		$targetStorage->acquireLock($targetInternalPath, $type, $provider);
@@ -454,7 +483,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 * @param int $type \OCP\Lock\ILockingProvider::LOCK_SHARED or \OCP\Lock\ILockingProvider::LOCK_EXCLUSIVE
 	 * @param \OCP\Lock\ILockingProvider $provider
 	 */
-	public function releaseLock($path, $type, ILockingProvider $provider) {
+	public function releaseLock($path, $type, ILockingProvider $provider)
+	{
 		/** @var \OCP\Files\Storage $targetStorage */
 		[$targetStorage, $targetInternalPath] = $this->resolvePath($path);
 		$targetStorage->releaseLock($targetInternalPath, $type, $provider);
@@ -470,7 +500,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	 * @param int $type \OCP\Lock\ILockingProvider::LOCK_SHARED or \OCP\Lock\ILockingProvider::LOCK_EXCLUSIVE
 	 * @param \OCP\Lock\ILockingProvider $provider
 	 */
-	public function changeLock($path, $type, ILockingProvider $provider) {
+	public function changeLock($path, $type, ILockingProvider $provider)
+	{
 		/** @var \OCP\Files\Storage $targetStorage */
 		[$targetStorage, $targetInternalPath] = $this->resolvePath($path);
 		$targetStorage->changeLock($targetInternalPath, $type, $provider);
@@ -479,7 +510,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	/**
 	 * @return array [ available, last_checked ]
 	 */
-	public function getAvailability() {
+	public function getAvailability()
+	{
 		// shares do not participate in availability logic
 		return [
 			'available' => true,
@@ -490,21 +522,25 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 	/**
 	 * @param bool $available
 	 */
-	public function setAvailability($available) {
+	public function setAvailability($available)
+	{
 		// shares do not participate in availability logic
 	}
 
-	public function getSourceStorage() {
+	public function getSourceStorage()
+	{
 		$this->init();
 		return $this->nonMaskedStorage;
 	}
 
-	public function getWrapperStorage() {
+	public function getWrapperStorage()
+	{
 		$this->init();
 		return $this->storage;
 	}
 
-	public function file_get_contents($path) {
+	public function file_get_contents($path)
+	{
 		$info = [
 			'target' => $this->getMountPoint() . '/' . $path,
 			'source' => $this->getUnjailedPath($path),
@@ -513,7 +549,8 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 		return parent::file_get_contents($path);
 	}
 
-	public function file_put_contents($path, $data) {
+	public function file_put_contents($path, $data)
+	{
 		$info = [
 			'target' => $this->getMountPoint() . '/' . $path,
 			'source' => $this->getUnjailedPath($path),
@@ -522,11 +559,13 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 		return parent::file_put_contents($path, $data);
 	}
 
-	public function setMountOptions(array $options) {
+	public function setMountOptions(array $options)
+	{
 		$this->mountOptions = $options;
 	}
 
-	public function getUnjailedPath($path) {
+	public function getUnjailedPath($path)
+	{
 		$this->init();
 		return parent::getUnjailedPath($path);
 	}

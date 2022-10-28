@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -29,6 +30,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\CardDAV;
 
 use OCP\Constants;
@@ -39,7 +41,8 @@ use Sabre\VObject\Property;
 use Sabre\VObject\Reader;
 use Sabre\VObject\UUIDUtil;
 
-class AddressBookImpl implements IAddressBook {
+class AddressBookImpl implements IAddressBook
+{
 
 	/** @var CardDavBackend */
 	private $backend;
@@ -62,10 +65,11 @@ class AddressBookImpl implements IAddressBook {
 	 * @param IUrlGenerator $urlGenerator
 	 */
 	public function __construct(
-			AddressBook $addressBook,
-			array $addressBookInfo,
-			CardDavBackend $backend,
-			IURLGenerator $urlGenerator) {
+		AddressBook $addressBook,
+		array $addressBookInfo,
+		CardDavBackend $backend,
+		IURLGenerator $urlGenerator
+	) {
 		$this->addressBook = $addressBook;
 		$this->addressBookInfo = $addressBookInfo;
 		$this->backend = $backend;
@@ -76,7 +80,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @return string defining the technical unique key
 	 * @since 5.0.0
 	 */
-	public function getKey() {
+	public function getKey()
+	{
 		return $this->addressBookInfo['id'];
 	}
 
@@ -84,7 +89,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @return string defining the unique uri
 	 * @since 16.0.0
 	 */
-	public function getUri(): string {
+	public function getUri(): string
+	{
 		return $this->addressBookInfo['uri'];
 	}
 
@@ -94,7 +100,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @return mixed
 	 * @since 5.0.0
 	 */
-	public function getDisplayName() {
+	public function getDisplayName()
+	{
 		return $this->addressBookInfo['{DAV:}displayname'];
 	}
 
@@ -117,7 +124,8 @@ class AddressBookImpl implements IAddressBook {
 	 *	]
 	 * @since 5.0.0
 	 */
-	public function search($pattern, $searchProperties, $options) {
+	public function search($pattern, $searchProperties, $options)
+	{
 		$results = $this->backend->search($this->getKey(), $pattern, $searchProperties, $options);
 
 		$withTypes = \array_key_exists('types', $options) && $options['types'] === true;
@@ -135,7 +143,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @return array an array representing the contact just created or updated
 	 * @since 5.0.0
 	 */
-	public function createOrUpdate($properties) {
+	public function createOrUpdate($properties)
+	{
 		$update = false;
 		if (!isset($properties['URI'])) { // create a new contact
 			$uid = $this->createUid();
@@ -184,7 +193,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @return mixed
 	 * @since 5.0.0
 	 */
-	public function getPermissions() {
+	public function getPermissions()
+	{
 		$permissions = $this->addressBook->getACL();
 		$result = 0;
 		foreach ($permissions as $permission) {
@@ -210,7 +220,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @return bool successful or not
 	 * @since 5.0.0
 	 */
-	public function delete($id) {
+	public function delete($id)
+	{
 		$uri = $this->backend->getCardUri($id);
 		return $this->backend->deleteCard($this->addressBookInfo['id'], $uri);
 	}
@@ -221,7 +232,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @param string $cardData
 	 * @return VCard
 	 */
-	protected function readCard($cardData) {
+	protected function readCard($cardData)
+	{
 		return  Reader::read($cardData);
 	}
 
@@ -230,7 +242,8 @@ class AddressBookImpl implements IAddressBook {
 	 *
 	 * @return string
 	 */
-	protected function createUid() {
+	protected function createUid()
+	{
 		do {
 			$uid = $this->getUid();
 			$contact = $this->backend->getContact($this->getKey(), $uid . '.vcf');
@@ -242,7 +255,8 @@ class AddressBookImpl implements IAddressBook {
 	/**
 	 * getUid is only there for testing, use createUid instead
 	 */
-	protected function getUid() {
+	protected function getUid()
+	{
 		return UUIDUtil::getUUID();
 	}
 
@@ -252,7 +266,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @param string $uid
 	 * @return VCard
 	 */
-	protected function createEmptyVCard($uid) {
+	protected function createEmptyVCard($uid)
+	{
 		$vCard = new VCard();
 		$vCard->UID = $uid;
 		return $vCard;
@@ -266,7 +281,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @param boolean $withTypes (optional) return the values as arrays of value/type pairs
 	 * @return array
 	 */
-	protected function vCard2Array($uri, VCard $vCard, $withTypes = false) {
+	protected function vCard2Array($uri, VCard $vCard, $withTypes = false)
+	{
 		$result = [
 			'URI' => $uri,
 		];
@@ -274,7 +290,8 @@ class AddressBookImpl implements IAddressBook {
 		foreach ($vCard->children() as $property) {
 			if ($property->name === 'PHOTO' && $property->getValueType() === 'BINARY') {
 				$url = $this->urlGenerator->getAbsoluteURL(
-					$this->urlGenerator->linkTo('', 'remote.php') . '/dav/');
+					$this->urlGenerator->linkTo('', 'remote.php') . '/dav/'
+				);
 				$url .= implode('/', [
 					'addressbooks',
 					substr($this->addressBookInfo['principaluri'], 11), //cut off 'principals/'
@@ -314,7 +331,8 @@ class AddressBookImpl implements IAddressBook {
 	 * @param Property $property
 	 * @return null|string
 	 */
-	protected function getTypeFromProperty(Property $property) {
+	protected function getTypeFromProperty(Property $property)
+	{
 		$parameters = $property->parameters();
 		// Type is the social network, when it's empty we don't need this.
 		if (isset($parameters['TYPE'])) {
@@ -329,7 +347,8 @@ class AddressBookImpl implements IAddressBook {
 	/**
 	 * @inheritDoc
 	 */
-	public function isShared(): bool {
+	public function isShared(): bool
+	{
 		if (!isset($this->addressBookInfo['{http://owncloud.org/ns}owner-principal'])) {
 			return false;
 		}
@@ -341,9 +360,9 @@ class AddressBookImpl implements IAddressBook {
 	/**
 	 * @inheritDoc
 	 */
-	public function isSystemAddressBook(): bool {
-		return $this->addressBookInfo['principaluri'] === 'principals/system/system' && (
-			$this->addressBookInfo['uri'] === 'system' ||
+	public function isSystemAddressBook(): bool
+	{
+		return $this->addressBookInfo['principaluri'] === 'principals/system/system' && ($this->addressBookInfo['uri'] === 'system' ||
 			$this->addressBookInfo['{DAV:}displayname'] === $this->urlGenerator->getBaseUrl()
 		);
 	}

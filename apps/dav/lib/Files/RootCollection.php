@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -23,6 +24,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\Files;
 
 use OCP\Files\FileInfo;
@@ -30,7 +32,8 @@ use Sabre\DAV\INode;
 use Sabre\DAV\SimpleCollection;
 use Sabre\DAVACL\AbstractPrincipalCollection;
 
-class RootCollection extends AbstractPrincipalCollection {
+class RootCollection extends AbstractPrincipalCollection
+{
 
 	/**
 	 * This method returns a node for a principal.
@@ -42,8 +45,9 @@ class RootCollection extends AbstractPrincipalCollection {
 	 * @param array $principalInfo
 	 * @return INode
 	 */
-	public function getChildForPrincipal(array $principalInfo) {
-		[,$name] = \Sabre\Uri\split($principalInfo['uri']);
+	public function getChildForPrincipal(array $principalInfo)
+	{
+		[, $name] = \Sabre\Uri\split($principalInfo['uri']);
 		$user = \OC::$server->getUserSession()->getUser();
 		if (is_null($user) || $name !== $user->getUID()) {
 			// a user is only allowed to see their own home contents, so in case another collection
@@ -58,7 +62,8 @@ class RootCollection extends AbstractPrincipalCollection {
 		return new FilesHome($principalInfo, $userFolder);
 	}
 
-	public function getName() {
+	public function getName()
+	{
 		return 'files';
 	}
 }

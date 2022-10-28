@@ -27,6 +27,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\Middleware;
 
 use OCA\Files_Sharing\Controller\ExternalSharesController;
@@ -48,7 +49,8 @@ use OCP\Share\IManager;
  *
  * @package OCA\Files_Sharing\Middleware
  */
-class SharingCheckMiddleware extends Middleware {
+class SharingCheckMiddleware extends Middleware
+{
 
 	/** @var string */
 	protected $appName;
@@ -63,13 +65,14 @@ class SharingCheckMiddleware extends Middleware {
 	/** @var IRequest */
 	protected $request;
 
-	public function __construct(string $appName,
-								IConfig $config,
-								IAppManager $appManager,
-								IControllerMethodReflector $reflector,
-								IManager $shareManager,
-								IRequest $request
-								) {
+	public function __construct(
+		string $appName,
+		IConfig $config,
+		IAppManager $appManager,
+		IControllerMethodReflector $reflector,
+		IManager $shareManager,
+		IRequest $request
+	) {
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->appManager = $appManager;
@@ -86,13 +89,16 @@ class SharingCheckMiddleware extends Middleware {
 	 * @throws NotFoundException
 	 * @throws S2SException
 	 */
-	public function beforeController($controller, $methodName): void {
+	public function beforeController($controller, $methodName): void
+	{
 		if (!$this->isSharingEnabled()) {
 			throw new NotFoundException('Sharing is disabled.');
 		}
 
-		if ($controller instanceof ExternalSharesController &&
-			!$this->externalSharesChecks()) {
+		if (
+			$controller instanceof ExternalSharesController &&
+			!$this->externalSharesChecks()
+		) {
 			throw new S2SException('Federated sharing not allowed');
 		}
 	}
@@ -106,7 +112,8 @@ class SharingCheckMiddleware extends Middleware {
 	 * @return Response
 	 * @throws \Exception
 	 */
-	public function afterException($controller, $methodName, \Exception $exception): Response {
+	public function afterException($controller, $methodName, \Exception $exception): Response
+	{
 		if (is_a($exception, NotFoundException::class)) {
 			return new NotFoundResponse();
 		}
@@ -122,14 +129,19 @@ class SharingCheckMiddleware extends Middleware {
 	 * Checks for externalshares controller
 	 * @return bool
 	 */
-	private function externalSharesChecks(): bool {
-		if (!$this->reflector->hasAnnotation('NoIncomingFederatedSharingRequired') &&
-			$this->config->getAppValue('files_sharing', 'incoming_server2server_share_enabled', 'yes') !== 'yes') {
+	private function externalSharesChecks(): bool
+	{
+		if (
+			!$this->reflector->hasAnnotation('NoIncomingFederatedSharingRequired') &&
+			$this->config->getAppValue('files_sharing', 'incoming_server2server_share_enabled', 'yes') !== 'yes'
+		) {
 			return false;
 		}
 
-		if (!$this->reflector->hasAnnotation('NoOutgoingFederatedSharingRequired') &&
-			$this->config->getAppValue('files_sharing', 'outgoing_server2server_share_enabled', 'yes') !== 'yes') {
+		if (
+			!$this->reflector->hasAnnotation('NoOutgoingFederatedSharingRequired') &&
+			$this->config->getAppValue('files_sharing', 'outgoing_server2server_share_enabled', 'yes') !== 'yes'
+		) {
 			return false;
 		}
 
@@ -140,7 +152,8 @@ class SharingCheckMiddleware extends Middleware {
 	 * Check whether sharing is enabled
 	 * @return bool
 	 */
-	private function isSharingEnabled(): bool {
+	private function isSharingEnabled(): bool
+	{
 		// FIXME: This check is done here since the route is globally defined and not inside the files_sharing app
 		// Check whether the sharing application is enabled
 		if (!$this->appManager->isEnabledForUser($this->appName)) {

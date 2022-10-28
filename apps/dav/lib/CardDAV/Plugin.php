@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -21,6 +22,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\CardDAV;
 
 use OCA\DAV\CardDAV\Xml\Groups;
@@ -28,8 +30,10 @@ use Sabre\DAV\INode;
 use Sabre\DAV\PropFind;
 use Sabre\DAV\Server;
 
-class Plugin extends \Sabre\CardDAV\Plugin {
-	public function initialize(Server $server) {
+class Plugin extends \Sabre\CardDAV\Plugin
+{
+	public function initialize(Server $server)
+	{
 		$server->on('propFind', [$this, 'propFind']);
 		parent::initialize($server);
 	}
@@ -40,7 +44,8 @@ class Plugin extends \Sabre\CardDAV\Plugin {
 	 * @param string $principal
 	 * @return string|null
 	 */
-	protected function getAddressbookHomeForPrincipal($principal) {
+	protected function getAddressbookHomeForPrincipal($principal)
+	{
 		if (strrpos($principal, 'principals/users', -strlen($principal)) !== false) {
 			[, $principalId] = \Sabre\Uri\split($principal);
 			return self::ADDRESSBOOK_ROOT . '/users/' . $principalId;
@@ -62,7 +67,8 @@ class Plugin extends \Sabre\CardDAV\Plugin {
 	 * @param INode $node
 	 * @return void
 	 */
-	public function propFind(PropFind $propFind, INode $node) {
+	public function propFind(PropFind $propFind, INode $node)
+	{
 		$ns = '{http://owncloud.org/ns}';
 
 		if ($node instanceof AddressBook) {

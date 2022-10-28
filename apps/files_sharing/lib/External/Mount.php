@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -22,12 +23,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\External;
 
 use OC\Files\Mount\MountPoint;
 use OC\Files\Mount\MoveableMount;
 
-class Mount extends MountPoint implements MoveableMount {
+class Mount extends MountPoint implements MoveableMount
+{
 
 	/**
 	 * @var \OCA\Files_Sharing\External\Manager
@@ -41,7 +44,8 @@ class Mount extends MountPoint implements MoveableMount {
 	 * @param \OCA\Files_Sharing\External\Manager $manager
 	 * @param \OC\Files\Storage\StorageFactory $loader
 	 */
-	public function __construct($storage, $mountpoint, $options, $manager, $loader = null) {
+	public function __construct($storage, $mountpoint, $options, $manager, $loader = null)
+	{
 		parent::__construct($storage, $mountpoint, $options, $loader, null, null, MountProvider::class);
 		$this->manager = $manager;
 	}
@@ -52,7 +56,8 @@ class Mount extends MountPoint implements MoveableMount {
 	 * @param string $target the target mount point
 	 * @return bool
 	 */
-	public function moveMount($target) {
+	public function moveMount($target)
+	{
 		$result = $this->manager->setMountPoint($this->mountPoint, $target);
 		$this->setMountPoint($target);
 
@@ -65,7 +70,8 @@ class Mount extends MountPoint implements MoveableMount {
 	 * @return mixed
 	 * @return bool
 	 */
-	public function removeMount() {
+	public function removeMount()
+	{
 		return $this->manager->removeShare($this->mountPoint);
 	}
 
@@ -75,7 +81,8 @@ class Mount extends MountPoint implements MoveableMount {
 	 *
 	 * @return string
 	 */
-	public function getMountType() {
+	public function getMountType()
+	{
 		return 'shared';
 	}
 }

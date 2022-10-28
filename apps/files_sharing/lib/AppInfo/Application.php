@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -27,6 +28,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\AppInfo;
 
 use OC\Share\Share;
@@ -70,14 +72,17 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-class Application extends App implements IBootstrap {
+class Application extends App implements IBootstrap
+{
 	public const APP_ID = 'files_sharing';
 
-	public function __construct(array $urlParams = []) {
+	public function __construct(array $urlParams = [])
+	{
 		parent::__construct(self::APP_ID, $urlParams);
 	}
 
-	public function register(IRegistrationContext $context): void {
+	public function register(IRegistrationContext $context): void
+	{
 		$context->registerService(ExternalMountProvider::class, function (ContainerInterface $c) {
 			return new ExternalMountProvider(
 				$c->get(IDBConnection::class),
@@ -100,7 +105,8 @@ class Application extends App implements IBootstrap {
 		$context->registerNotifierService(Notifier::class);
 	}
 
-	public function boot(IBootContext $context): void {
+	public function boot(IBootContext $context): void
+	{
 		$context->injectFn([$this, 'registerMountProviders']);
 		$context->injectFn([$this, 'registerEventsScripts']);
 		$context->injectFn([$this, 'setupSharingMenus']);
@@ -117,12 +123,14 @@ class Application extends App implements IBootstrap {
 	}
 
 
-	public function registerMountProviders(IMountProviderCollection $mountProviderCollection, MountProvider $mountProvider, ExternalMountProvider $externalMountProvider) {
+	public function registerMountProviders(IMountProviderCollection $mountProviderCollection, MountProvider $mountProvider, ExternalMountProvider $externalMountProvider)
+	{
 		$mountProviderCollection->registerProvider($mountProvider);
 		$mountProviderCollection->registerProvider($externalMountProvider);
 	}
 
-	public function registerEventsScripts(IEventDispatcher $dispatcher, EventDispatcherInterface $oldDispatcher) {
+	public function registerEventsScripts(IEventDispatcher $dispatcher, EventDispatcherInterface $oldDispatcher)
+	{
 		// sidebar and files scripts
 		$dispatcher->addServiceListener(LoadAdditionalScriptsEvent::class, LoadAdditionalListener::class);
 		$dispatcher->addServiceListener(BeforeTemplateRenderedEvent::class, LegacyBeforeTemplateRenderedListener::class);
@@ -147,7 +155,8 @@ class Application extends App implements IBootstrap {
 		});
 	}
 
-	public function setupSharingMenus(IManager $shareManager, IFactory $l10nFactory, IUserSession $userSession) {
+	public function setupSharingMenus(IManager $shareManager, IFactory $l10nFactory, IUserSession $userSession)
+	{
 		if (!$shareManager->shareApiEnabled() || !class_exists('\OCA\Files\App')) {
 			return;
 		}

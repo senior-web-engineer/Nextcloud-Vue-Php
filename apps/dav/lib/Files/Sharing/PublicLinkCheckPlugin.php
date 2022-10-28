@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -21,6 +22,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\Files\Sharing;
 
 use OCP\Files\FileInfo;
@@ -32,7 +34,8 @@ use Sabre\HTTP\ResponseInterface;
 /**
  * Verify that the public link share is valid
  */
-class PublicLinkCheckPlugin extends ServerPlugin {
+class PublicLinkCheckPlugin extends ServerPlugin
+{
 	/**
 	 * @var FileInfo
 	 */
@@ -41,7 +44,8 @@ class PublicLinkCheckPlugin extends ServerPlugin {
 	/**
 	 * @param FileInfo $fileInfo
 	 */
-	public function setFileInfo($fileInfo) {
+	public function setFileInfo($fileInfo)
+	{
 		$this->fileInfo = $fileInfo;
 	}
 
@@ -52,11 +56,13 @@ class PublicLinkCheckPlugin extends ServerPlugin {
 	 *
 	 * @return void
 	 */
-	public function initialize(\Sabre\DAV\Server $server) {
+	public function initialize(\Sabre\DAV\Server $server)
+	{
 		$server->on('beforeMethod:*', [$this, 'beforeMethod']);
 	}
 
-	public function beforeMethod(RequestInterface $request, ResponseInterface $response) {
+	public function beforeMethod(RequestInterface $request, ResponseInterface $response)
+	{
 		// verify that the owner didn't have his share permissions revoked
 		if ($this->fileInfo && !$this->fileInfo->isShareable()) {
 			throw new NotFound();

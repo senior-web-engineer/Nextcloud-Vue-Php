@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2021, Jonas Meurer <jonas@freesources.org>
  *
@@ -29,11 +30,13 @@ use Psr\Log\LoggerInterface;
  * Sort scripts topologically by their dependencies
  * Implementation based on https://github.com/marcj/topsort.php
  */
-class AppScriptSort {
+class AppScriptSort
+{
 	/** @var LoggerInterface */
 	private $logger;
 
-	public function __construct(LoggerInterface $logger) {
+	public function __construct(LoggerInterface $logger)
+	{
 		$this->logger = $logger;
 	}
 
@@ -46,10 +49,11 @@ class AppScriptSort {
 	 * @param array $sortedScriptDeps
 	 */
 	private function topSortVisit(
-			AppScriptDependency $app,
-			array &$parents,
-			array &$scriptDeps,
-			array &$sortedScriptDeps): void {
+		AppScriptDependency $app,
+		array &$parents,
+		array &$scriptDeps,
+		array &$sortedScriptDeps
+	): void {
 		// Detect and log circular dependencies
 		if (isset($parents[$app->getId()])) {
 			$this->logger->error('Circular dependency in app scripts at app ' . $app->getId());
@@ -79,7 +83,8 @@ class AppScriptSort {
 	/**
 	 * @return array scripts sorted by dependencies
 	 */
-	public function sort(array $scripts, array $scriptDeps): array {
+	public function sort(array $scripts, array $scriptDeps): array
+	{
 		// Sort scriptDeps into sortedScriptDeps
 		$sortedScriptDeps = [];
 		foreach ($scriptDeps as $app) {

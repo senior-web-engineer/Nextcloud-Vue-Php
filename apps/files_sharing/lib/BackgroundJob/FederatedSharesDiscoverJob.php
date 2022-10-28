@@ -24,27 +24,32 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\BackgroundJob;
 
 use OC\BackgroundJob\TimedJob;
 use OCP\IDBConnection;
 use OCP\OCS\IDiscoveryService;
 
-class FederatedSharesDiscoverJob extends TimedJob {
+class FederatedSharesDiscoverJob extends TimedJob
+{
 	/** @var IDBConnection */
 	private $connection;
 	/** @var IDiscoveryService */
 	private $discoveryService;
 
-	public function __construct(IDBConnection $connection,
-								IDiscoveryService $discoveryService) {
+	public function __construct(
+		IDBConnection $connection,
+		IDiscoveryService $discoveryService
+	) {
 		$this->connection = $connection;
 		$this->discoveryService = $discoveryService;
 
 		$this->setInterval(86400);
 	}
 
-	public function run($argument) {
+	public function run($argument)
+	{
 		$qb = $this->connection->getQueryBuilder();
 
 		$qb->selectDistinct('remote')

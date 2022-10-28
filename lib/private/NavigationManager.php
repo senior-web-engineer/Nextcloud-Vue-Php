@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud GmbH
  *
@@ -29,6 +30,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OC;
 
 use OC\App\AppManager;
@@ -45,7 +47,8 @@ use OCP\L10N\IFactory;
  * Manages the ownCloud navigation
  */
 
-class NavigationManager implements INavigationManager {
+class NavigationManager implements INavigationManager
+{
 	protected $entries = [];
 	protected $closureEntries = [];
 	protected $activeEntry;
@@ -66,12 +69,14 @@ class NavigationManager implements INavigationManager {
 	/** @var IConfig */
 	private $config;
 
-	public function __construct(IAppManager $appManager,
-						 IURLGenerator $urlGenerator,
-						 IFactory $l10nFac,
-						 IUserSession $userSession,
-						 IGroupManager $groupManager,
-						 IConfig $config) {
+	public function __construct(
+		IAppManager $appManager,
+		IURLGenerator $urlGenerator,
+		IFactory $l10nFac,
+		IUserSession $userSession,
+		IGroupManager $groupManager,
+		IConfig $config
+	) {
 		$this->appManager = $appManager;
 		$this->urlGenerator = $urlGenerator;
 		$this->l10nFac = $l10nFac;
@@ -83,7 +88,8 @@ class NavigationManager implements INavigationManager {
 	/**
 	 * @inheritDoc
 	 */
-	public function add($entry) {
+	public function add($entry)
+	{
 		if ($entry instanceof \Closure) {
 			$this->closureEntries[] = $entry;
 			return;
@@ -109,7 +115,8 @@ class NavigationManager implements INavigationManager {
 	/**
 	 * @inheritDoc
 	 */
-	public function getAll(string $type = 'link'): array {
+	public function getAll(string $type = 'link'): array
+	{
 		$this->init();
 		foreach ($this->closureEntries as $c) {
 			$this->add($c());
@@ -132,7 +139,8 @@ class NavigationManager implements INavigationManager {
 	 * @param array $list
 	 * @return array
 	 */
-	private function proceedNavigation(array $list): array {
+	private function proceedNavigation(array $list): array
+	{
 		uasort($list, function ($a, $b) {
 			if (isset($a['order']) && isset($b['order'])) {
 				return ($a['order'] < $b['order']) ? -1 : 1;
@@ -162,7 +170,8 @@ class NavigationManager implements INavigationManager {
 	/**
 	 * removes all the entries
 	 */
-	public function clear($loadDefaultLinks = true) {
+	public function clear($loadDefaultLinks = true)
+	{
 		$this->entries = [];
 		$this->closureEntries = [];
 		$this->init = !$loadDefaultLinks;
@@ -171,18 +180,21 @@ class NavigationManager implements INavigationManager {
 	/**
 	 * @inheritDoc
 	 */
-	public function setActiveEntry($id) {
+	public function setActiveEntry($id)
+	{
 		$this->activeEntry = $id;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getActiveEntry() {
+	public function getActiveEntry()
+	{
 		return $this->activeEntry;
 	}
 
-	private function init() {
+	private function init()
+	{
 		if ($this->init) {
 			return;
 		}
@@ -310,7 +322,8 @@ class NavigationManager implements INavigationManager {
 		}
 	}
 
-	private function isAdmin() {
+	private function isAdmin()
+	{
 		$user = $this->userSession->getUser();
 		if ($user !== null) {
 			return $this->groupManager->isAdmin($user->getUID());
@@ -318,7 +331,8 @@ class NavigationManager implements INavigationManager {
 		return false;
 	}
 
-	private function isSubadmin() {
+	private function isSubadmin()
+	{
 		$user = $this->userSession->getUser();
 		if ($user !== null) {
 			return $this->groupManager->getSubAdmin()->isSubAdmin($user);
@@ -326,7 +340,8 @@ class NavigationManager implements INavigationManager {
 		return false;
 	}
 
-	public function setUnreadCounter(string $id, int $unreadCounter): void {
+	public function setUnreadCounter(string $id, int $unreadCounter): void
+	{
 		$this->unreadCounters[$id] = $unreadCounter;
 	}
 }

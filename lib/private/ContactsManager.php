@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -24,13 +25,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OC;
 
 use OCP\Constants;
 use OCP\Contacts\IManager;
 use OCP\IAddressBook;
 
-class ContactsManager implements IManager {
+class ContactsManager implements IManager
+{
 
 	/**
 	 * This function is used to search and find contacts within the users address books.
@@ -48,7 +51,8 @@ class ContactsManager implements IManager {
 	 * @psalm-param array{escape_like_param?: bool, limit?: int, offset?: int, enumeration?: bool, fullmatch?: bool, strict_search?: bool} $options
 	 * @return array an array of contacts which are arrays of key-value-pairs
 	 */
-	public function search($pattern, $searchProperties = [], $options = []) {
+	public function search($pattern, $searchProperties = [], $options = [])
+	{
 		$this->loadAddressBooks();
 		$result = [];
 		foreach ($this->addressBooks as $addressBook) {
@@ -89,7 +93,8 @@ class ContactsManager implements IManager {
 	 * @param string $address_book_key identifier of the address book in which the contact shall be deleted
 	 * @return bool successful or not
 	 */
-	public function delete($id, $address_book_key) {
+	public function delete($id, $address_book_key)
+	{
 		$addressBook = $this->getAddressBook($address_book_key);
 		if (!$addressBook) {
 			return null;
@@ -110,7 +115,8 @@ class ContactsManager implements IManager {
 	 * @param string $address_book_key identifier of the address book in which the contact shall be created or updated
 	 * @return array representing the contact just created or updated
 	 */
-	public function createOrUpdate($properties, $address_book_key) {
+	public function createOrUpdate($properties, $address_book_key)
+	{
 		$addressBook = $this->getAddressBook($address_book_key);
 		if (!$addressBook) {
 			return null;
@@ -128,21 +134,24 @@ class ContactsManager implements IManager {
 	 *
 	 * @return bool true if enabled, false if not
 	 */
-	public function isEnabled() {
+	public function isEnabled()
+	{
 		return !empty($this->addressBooks) || !empty($this->addressBookLoaders);
 	}
 
 	/**
 	 * @param IAddressBook $addressBook
 	 */
-	public function registerAddressBook(IAddressBook $addressBook) {
+	public function registerAddressBook(IAddressBook $addressBook)
+	{
 		$this->addressBooks[$addressBook->getKey()] = $addressBook;
 	}
 
 	/**
 	 * @param IAddressBook $addressBook
 	 */
-	public function unregisterAddressBook(IAddressBook $addressBook) {
+	public function unregisterAddressBook(IAddressBook $addressBook)
+	{
 		unset($this->addressBooks[$addressBook->getKey()]);
 	}
 
@@ -154,7 +163,8 @@ class ContactsManager implements IManager {
 	 * @since 6.0.0
 	 * @deprecated 16.0.0 - Use `$this->getUserAddressBooks()` instead
 	 */
-	public function getAddressBooks() {
+	public function getAddressBooks()
+	{
 		$this->loadAddressBooks();
 		$result = [];
 		foreach ($this->addressBooks as $addressBook) {
@@ -170,7 +180,8 @@ class ContactsManager implements IManager {
 	 * @return IAddressBook[]
 	 * @since 16.0.0
 	 */
-	public function getUserAddressBooks(): array {
+	public function getUserAddressBooks(): array
+	{
 		$this->loadAddressBooks();
 		return $this->addressBooks;
 	}
@@ -178,7 +189,8 @@ class ContactsManager implements IManager {
 	/**
 	 * removes all registered address book instances
 	 */
-	public function clear() {
+	public function clear()
+	{
 		$this->addressBooks = [];
 		$this->addressBookLoaders = [];
 	}
@@ -199,7 +211,8 @@ class ContactsManager implements IManager {
 	 *
 	 * @param \Closure $callable
 	 */
-	public function register(\Closure $callable) {
+	public function register(\Closure $callable)
+	{
 		$this->addressBookLoaders[] = $callable;
 	}
 
@@ -209,7 +222,8 @@ class ContactsManager implements IManager {
 	 * @param string $addressBookKey
 	 * @return IAddressBook
 	 */
-	protected function getAddressBook($addressBookKey) {
+	protected function getAddressBook($addressBookKey)
+	{
 		$this->loadAddressBooks();
 		if (!array_key_exists($addressBookKey, $this->addressBooks)) {
 			return null;
@@ -221,7 +235,8 @@ class ContactsManager implements IManager {
 	/**
 	 * Load all address books registered with 'register'
 	 */
-	protected function loadAddressBooks() {
+	protected function loadAddressBooks()
+	{
 		foreach ($this->addressBookLoaders as $callable) {
 			$callable($this);
 		}

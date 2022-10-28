@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -20,9 +21,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OCP\Files\Storage\IStorage;
 
-interface ISharedStorage extends IStorage {
+interface ISharedStorage extends IStorage
+{
 }

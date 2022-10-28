@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -24,18 +25,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Files\Filesystem;
 
-class Hooks {
-	public static function deleteUser($params) {
+class Hooks
+{
+	public static function deleteUser($params)
+	{
 		$manager = \OC::$server->get(External\Manager::class);
 
 		$manager->removeUserShares($params['uid']);
 	}
 
-	public static function unshareChildren($params) {
+	public static function unshareChildren($params)
+	{
 		$path = Filesystem::getView()->getAbsolutePath($params['path']);
 		$view = new \OC\Files\View('/');
 

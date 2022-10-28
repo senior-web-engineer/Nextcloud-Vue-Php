@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\BackgroundJob\TimedJob;
@@ -29,7 +31,8 @@ use OC\BackgroundJob\TimedJob;
 /**
  * Delete all share entries that have no matching entries in the file cache table.
  */
-class DeleteOrphanedSharesJob extends TimedJob {
+class DeleteOrphanedSharesJob extends TimedJob
+{
 
 	/**
 	 * Default interval in minutes
@@ -41,7 +44,8 @@ class DeleteOrphanedSharesJob extends TimedJob {
 	/**
 	 * sets the correct interval for this timed job
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->interval = $this->defaultIntervalMin * 60;
 	}
 
@@ -50,7 +54,8 @@ class DeleteOrphanedSharesJob extends TimedJob {
 	 *
 	 * @param array $argument unused argument
 	 */
-	public function run($argument) {
+	public function run($argument)
+	{
 		$connection = \OC::$server->getDatabaseConnection();
 		$logger = \OC::$server->getLogger();
 

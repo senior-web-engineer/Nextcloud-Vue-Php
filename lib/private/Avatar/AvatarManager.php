@@ -33,6 +33,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OC\Avatar;
 
 use OC\KnownUser\KnownUserService;
@@ -54,7 +55,8 @@ use Psr\Log\LoggerInterface;
 /**
  * This class implements methods to access Avatar functionality
  */
-class AvatarManager implements IAvatarManager {
+class AvatarManager implements IAvatarManager
+{
 
 	/** @var IUserSession */
 	private $userSession;
@@ -81,14 +83,14 @@ class AvatarManager implements IAvatarManager {
 	private $knownUserService;
 
 	public function __construct(
-			IUserSession $userSession,
-			Manager $userManager,
-			IAppData $appData,
-			IL10N $l,
-			LoggerInterface $logger,
-			IConfig $config,
-			IAccountManager $accountManager,
-			KnownUserService $knownUserService
+		IUserSession $userSession,
+		Manager $userManager,
+		IAppData $appData,
+		IL10N $l,
+		LoggerInterface $logger,
+		IConfig $config,
+		IAccountManager $accountManager,
+		KnownUserService $knownUserService
 	) {
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
@@ -108,7 +110,8 @@ class AvatarManager implements IAvatarManager {
 	 * @throws \Exception In case the username is potentially dangerous
 	 * @throws NotFoundException In case there is no user folder yet
 	 */
-	public function getAvatar(string $userId) : IAvatar {
+	public function getAvatar(string $userId): IAvatar
+	{
 		$user = $this->userManager->get($userId);
 		if ($user === null) {
 			throw new \Exception('user does not exist');
@@ -144,7 +147,8 @@ class AvatarManager implements IAvatarManager {
 				$requestingUser === null
 				// logged in, but unknown to user
 				|| !$this->knownUserService->isKnownToUser($requestingUser->getUID(), $userId)
-			)) {
+			)
+		) {
 			// use a placeholder avatar which caches the generated images
 			return new PlaceholderAvatar($folder, $user, $this->logger);
 		}
@@ -155,7 +159,8 @@ class AvatarManager implements IAvatarManager {
 	/**
 	 * Clear generated avatars
 	 */
-	public function clearCachedAvatars() {
+	public function clearCachedAvatars()
+	{
 		$users = $this->config->getUsersForUserValue('avatar', 'generated', 'true');
 		foreach ($users as $userId) {
 			try {
@@ -168,7 +173,8 @@ class AvatarManager implements IAvatarManager {
 		}
 	}
 
-	public function deleteUserAvatar(string $userId): void {
+	public function deleteUserAvatar(string $userId): void
+	{
 		try {
 			$folder = $this->appData->getFolder($userId);
 			$folder->delete();
@@ -188,7 +194,8 @@ class AvatarManager implements IAvatarManager {
 	 * @param string $name The guest name, e.g. "Albert".
 	 * @return IAvatar
 	 */
-	public function getGuestAvatar(string $name): IAvatar {
+	public function getGuestAvatar(string $name): IAvatar
+	{
 		return new GuestAvatar($name, $this->logger);
 	}
 }

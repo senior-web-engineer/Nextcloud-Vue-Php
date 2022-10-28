@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -78,7 +79,8 @@ require_once 'public/Constants.php';
  * No, we can not put this class in its own file because it is used by
  * OC_autoload!
  */
-class OC {
+class OC
+{
 	/**
 	 * Associative array for autoloading. classname => filename
 	 */
@@ -138,7 +140,8 @@ class OC {
 	 * @throws \RuntimeException when the 3rdparty directory is missing or
 	 * the app path list is empty or contains an invalid path
 	 */
-	public static function initPaths() {
+	public static function initPaths()
+	{
 		if (defined('PHPUNIT_CONFIG_DIR')) {
 			self::$configDir = OC::$SERVERROOT . '/' . PHPUNIT_CONFIG_DIR . '/';
 		} elseif (defined('PHPUNIT_RUN') and PHPUNIT_RUN and is_dir(OC::$SERVERROOT . '/tests/config/')) {
@@ -194,9 +197,11 @@ class OC {
 
 			// Resolve /nextcloud to /nextcloud/ to ensure to always have a trailing
 			// slash which is required by URL generation.
-			if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === \OC::$WEBROOT &&
-					substr($_SERVER['REQUEST_URI'], -1) !== '/') {
-				header('Location: '.\OC::$WEBROOT.'/');
+			if (
+				isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === \OC::$WEBROOT &&
+				substr($_SERVER['REQUEST_URI'], -1) !== '/'
+			) {
+				header('Location: ' . \OC::$WEBROOT . '/');
 				exit();
 			}
 		}
@@ -234,41 +239,45 @@ class OC {
 		);
 	}
 
-	public static function checkConfig() {
+	public static function checkConfig()
+	{
 		$l = \OC::$server->getL10N('lib');
 
 		// Create config if it does not already exist
-		$configFilePath = self::$configDir .'/config.php';
+		$configFilePath = self::$configDir . '/config.php';
 		if (!file_exists($configFilePath)) {
 			@touch($configFilePath);
 		}
 
 		// Check if config is writable
 		$configFileWritable = is_writable($configFilePath);
-		if (!$configFileWritable && !OC_Helper::isReadOnlyConfigEnabled()
-			|| !$configFileWritable && \OCP\Util::needUpgrade()) {
+		if (
+			!$configFileWritable && !OC_Helper::isReadOnlyConfigEnabled()
+			|| !$configFileWritable && \OCP\Util::needUpgrade()
+		) {
 			$urlGenerator = \OC::$server->getURLGenerator();
 
 			if (self::$CLI) {
-				echo $l->t('Cannot write into "config" directory!')."\n";
-				echo $l->t('This can usually be fixed by giving the web server write access to the config directory.')."\n";
+				echo $l->t('Cannot write into "config" directory!') . "\n";
+				echo $l->t('This can usually be fixed by giving the web server write access to the config directory.') . "\n";
 				echo "\n";
-				echo $l->t('But, if you prefer to keep config.php file read only, set the option "config_is_read_only" to true in it.')."\n";
-				echo $l->t('See %s', [ $urlGenerator->linkToDocs('admin-config') ])."\n";
+				echo $l->t('But, if you prefer to keep config.php file read only, set the option "config_is_read_only" to true in it.') . "\n";
+				echo $l->t('See %s', [$urlGenerator->linkToDocs('admin-config')]) . "\n";
 				exit;
 			} else {
 				OC_Template::printErrorPage(
 					$l->t('Cannot write into "config" directory!'),
 					$l->t('This can usually be fixed by giving the web server write access to the config directory.') . ' '
-					. $l->t('But, if you prefer to keep config.php file read only, set the option "config_is_read_only" to true in it.') . ' '
-					. $l->t('See %s', [ $urlGenerator->linkToDocs('admin-config') ]),
+						. $l->t('But, if you prefer to keep config.php file read only, set the option "config_is_read_only" to true in it.') . ' '
+						. $l->t('See %s', [$urlGenerator->linkToDocs('admin-config')]),
 					503
 				);
 			}
 		}
 	}
 
-	public static function checkInstalled(\OC\SystemConfig $systemConfig) {
+	public static function checkInstalled(\OC\SystemConfig $systemConfig)
+	{
 		if (defined('OC_CONSOLE')) {
 			return;
 		}
@@ -284,7 +293,8 @@ class OC {
 		}
 	}
 
-	public static function checkMaintenanceMode(\OC\SystemConfig $systemConfig) {
+	public static function checkMaintenanceMode(\OC\SystemConfig $systemConfig)
+	{
 		// Allow ajax update script to execute without being stopped
 		if (((bool) $systemConfig->getValue('maintenance', false)) && OC::$SUBURI != '/core/ajax/update.php') {
 			// send http status 503
@@ -305,7 +315,8 @@ class OC {
 	 *
 	 * @param \OC\SystemConfig $systemConfig
 	 */
-	private static function printUpgradePage(\OC\SystemConfig $systemConfig) {
+	private static function printUpgradePage(\OC\SystemConfig $systemConfig)
+	{
 		$disableWebUpdater = $systemConfig->getValue('upgrade.disable-web', false);
 		$tooBig = false;
 		if (!$disableWebUpdater) {
@@ -407,7 +418,8 @@ class OC {
 		$tmpl->printPage();
 	}
 
-	public static function initSession() {
+	public static function initSession()
+	{
 		if (self::$server->getRequest()->getServerProtocol() === 'https') {
 			ini_set('session.cookie_secure', 'true');
 		}
@@ -416,7 +428,7 @@ class OC {
 		ini_set('session.cookie_httponly', 'true');
 
 		// set the cookie path to the Nextcloud directory
-		$cookie_path = OC::$WEBROOT ? : '/';
+		$cookie_path = OC::$WEBROOT ?: '/';
 		ini_set('session.cookie_path', $cookie_path);
 
 		// Let the session name be changed in the initSession Hook
@@ -443,7 +455,7 @@ class OC {
 		// session timeout
 		if ($session->exists('LAST_ACTIVITY') && (time() - $session->get('LAST_ACTIVITY') > $sessionLifeTime)) {
 			if (isset($_COOKIE[session_name()])) {
-				setcookie(session_name(), '', -1, self::$WEBROOT ? : '/');
+				setcookie(session_name(), '', -1, self::$WEBROOT ?: '/');
 			}
 			\OC::$server->getUserSession()->logout();
 		}
@@ -454,14 +466,16 @@ class OC {
 	/**
 	 * @return string
 	 */
-	private static function getSessionLifeTime() {
+	private static function getSessionLifeTime()
+	{
 		return \OC::$server->getConfig()->getSystemValue('session_lifetime', 60 * 60 * 24);
 	}
 
 	/**
 	 * Try to set some values to the required Nextcloud default
 	 */
-	public static function setRequiredIniValues() {
+	public static function setRequiredIniValues()
+	{
 		@ini_set('default_charset', 'UTF-8');
 		@ini_set('gd.jpeg_ignore_warning', '1');
 	}
@@ -469,7 +483,8 @@ class OC {
 	/**
 	 * Send the same site cookies
 	 */
-	private static function sendSameSiteCookies() {
+	private static function sendSameSiteCookies()
+	{
 		$cookieParams = session_get_cookie_params();
 		$secureCookie = ($cookieParams['secure'] === true) ? 'secure; ' : '';
 		$policies = [
@@ -506,7 +521,8 @@ class OC {
 	 * We use an additional cookie since we want to protect logout CSRF and
 	 * also we can't directly interfere with PHP's session mechanism.
 	 */
-	private static function performSameSiteCookieProtection(\OCP\IConfig $config) {
+	private static function performSameSiteCookieProtection(\OCP\IConfig $config)
+	{
 		$request = \OC::$server->getRequest();
 
 		// Some user agents are notorious and don't really properly follow HTTP
@@ -554,7 +570,8 @@ class OC {
 		}
 	}
 
-	public static function init() {
+	public static function init()
+	{
 		// calculate the root directories
 		OC::$SERVERROOT = str_replace("\\", '/', substr(__DIR__, 0, -4));
 
@@ -578,7 +595,7 @@ class OC {
 		try {
 			self::initPaths();
 			// setup 3rdparty autoloader
-			$vendorAutoLoad = OC::$SERVERROOT. '/3rdparty/autoload.php';
+			$vendorAutoLoad = OC::$SERVERROOT . '/3rdparty/autoload.php';
 			if (!file_exists($vendorAutoLoad)) {
 				throw new \RuntimeException('Composer autoloader not found, unable to continue. Check the folder "3rdparty". Running "git submodule update --init" will initialize the git submodule that handles the subfolder "3rdparty".');
 			}
@@ -690,7 +707,7 @@ class OC {
 				try {
 					$config->setAppValue('core', 'cronErrors', json_encode($staticErrors));
 				} catch (\Exception $e) {
-					echo('Writing to database failed');
+					echo ('Writing to database failed');
 				}
 				exit(1);
 			} elseif (self::$CLI && $config->getSystemValue('installed', false)) {
@@ -763,7 +780,8 @@ class OC {
 		 * if the host passed in headers isn't trusted
 		 * FIXME: Should not be in here at all :see_no_evil:
 		 */
-		if (!OC::$CLI
+		if (
+			!OC::$CLI
 			&& !\OC::$server->getTrustedDomainHelper()->isTrustedDomain($host)
 			&& $config->getSystemValue('installed', false)
 		) {
@@ -806,7 +824,8 @@ class OC {
 	/**
 	 * register hooks for the cleanup of cache and bruteforce protection
 	 */
-	public static function registerCleanupHooks(\OC\SystemConfig $systemConfig) {
+	public static function registerCleanupHooks(\OC\SystemConfig $systemConfig)
+	{
 		//don't try to do this before we are properly setup
 		if ($systemConfig->getValue('installed', false) && !\OCP\Util::needUpgrade()) {
 
@@ -842,7 +861,8 @@ class OC {
 		}
 	}
 
-	private static function registerEncryptionWrapperAndHooks() {
+	private static function registerEncryptionWrapperAndHooks()
+	{
 		$manager = self::$server->getEncryptionManager();
 		\OCP\Util::connectHook('OC_Filesystem', 'preSetup', $manager, 'setupStorage');
 
@@ -855,13 +875,15 @@ class OC {
 		}
 	}
 
-	private static function registerAccountHooks() {
+	private static function registerAccountHooks()
+	{
 		/** @var IEventDispatcher $dispatcher */
 		$dispatcher = \OC::$server->get(IEventDispatcher::class);
 		$dispatcher->addServiceListener(UserChangedEvent::class, \OC\Accounts\Hooks::class);
 	}
 
-	private static function registerAppRestrictionsHooks() {
+	private static function registerAppRestrictionsHooks()
+	{
 		/** @var \OC\Group\Manager $groupManager */
 		$groupManager = self::$server->query(\OCP\IGroupManager::class);
 		$groupManager->listen('\OC\Group', 'postDelete', function (\OCP\IGroup $group) {
@@ -884,14 +906,16 @@ class OC {
 		});
 	}
 
-	private static function registerResourceCollectionHooks() {
+	private static function registerResourceCollectionHooks()
+	{
 		\OC\Collaboration\Resources\Listener::register(\OC::$server->getEventDispatcher());
 	}
 
 	/**
 	 * register hooks for the filesystem
 	 */
-	public static function registerFilesystemHooks() {
+	public static function registerFilesystemHooks()
+	{
 		// Check for blacklisted files
 		OC_Hook::connect('OC_Filesystem', 'write', Filesystem::class, 'isBlacklisted');
 		OC_Hook::connect('OC_Filesystem', 'rename', Filesystem::class, 'isBlacklisted');
@@ -900,7 +924,8 @@ class OC {
 	/**
 	 * register hooks for sharing
 	 */
-	public static function registerShareHooks(\OC\SystemConfig $systemConfig) {
+	public static function registerShareHooks(\OC\SystemConfig $systemConfig)
+	{
 		if ($systemConfig->getValue('installed')) {
 			OC_Hook::connect('OC_User', 'post_deleteUser', Hooks::class, 'post_deleteUser');
 			OC_Hook::connect('OC_User', 'post_deleteGroup', Hooks::class, 'post_deleteGroup');
@@ -911,7 +936,8 @@ class OC {
 		}
 	}
 
-	protected static function registerAutoloaderCache(\OC\SystemConfig $systemConfig) {
+	protected static function registerAutoloaderCache(\OC\SystemConfig $systemConfig)
+	{
 		// The class loader takes an optional low-latency cache, which MUST be
 		// namespaced. The instanceid is used for namespacing, but might be
 		// unavailable at this point. Furthermore, it might not be possible to
@@ -931,7 +957,8 @@ class OC {
 	/**
 	 * Handle the request
 	 */
-	public static function handleRequest() {
+	public static function handleRequest()
+	{
 		\OC::$server->getEventLogger()->start('handle_request', 'Handle request');
 		$systemConfig = \OC::$server->getSystemConfig();
 
@@ -972,7 +999,8 @@ class OC {
 		}
 
 		// emergency app disabling
-		if ($requestPath === '/disableapp'
+		if (
+			$requestPath === '/disableapp'
 			&& $request->getMethod() === 'POST'
 			&& ((array)$request->getParam('appid')) !== ''
 		) {
@@ -991,8 +1019,10 @@ class OC {
 		OC_App::loadApps(['authentication']);
 
 		// Load minimum set of apps
-		if (!\OCP\Util::needUpgrade()
-			&& !((bool) $systemConfig->getValue('maintenance', false))) {
+		if (
+			!\OCP\Util::needUpgrade()
+			&& !((bool) $systemConfig->getValue('maintenance', false))
+		) {
 			// For logged-in users: Load everything
 			if (\OC::$server->getUserSession()->isLoggedIn()) {
 				OC_App::loadApps();
@@ -1052,7 +1082,8 @@ class OC {
 	 * @param OCP\IRequest $request
 	 * @return boolean
 	 */
-	public static function handleLogin(OCP\IRequest $request) {
+	public static function handleLogin(OCP\IRequest $request)
+	{
 		$userSession = self::$server->getUserSession();
 		if (OC_User::handleApacheAuth()) {
 			return true;
@@ -1060,10 +1091,12 @@ class OC {
 		if ($userSession->tryTokenLogin($request)) {
 			return true;
 		}
-		if (isset($_COOKIE['nc_username'])
+		if (
+			isset($_COOKIE['nc_username'])
 			&& isset($_COOKIE['nc_token'])
 			&& isset($_COOKIE['nc_session_id'])
-			&& $userSession->loginWithCookie($_COOKIE['nc_username'], $_COOKIE['nc_token'], $_COOKIE['nc_session_id'])) {
+			&& $userSession->loginWithCookie($_COOKIE['nc_username'], $_COOKIE['nc_token'], $_COOKIE['nc_session_id'])
+		) {
 			return true;
 		}
 		if ($userSession->tryBasicAuthLogin($request, \OC::$server->getBruteForceThrottler())) {
@@ -1072,7 +1105,8 @@ class OC {
 		return false;
 	}
 
-	protected static function handleAuthHeaders() {
+	protected static function handleAuthHeaders()
+	{
 		//copy http auth headers for apache+php-fcgid work around
 		if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
 			$_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];

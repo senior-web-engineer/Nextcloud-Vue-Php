@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -25,14 +26,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Files\Filesystem;
 use OC\Files\View;
 use OCA\Files_Sharing\AppInfo\Application;
 
-class Helper {
-	public static function registerHooks() {
+class Helper
+{
+	public static function registerHooks()
+	{
 		\OCP\Util::connectHook('OC_Filesystem', 'post_rename', '\OCA\Files_Sharing\Updater', 'renameHook');
 		\OCP\Util::connectHook('OC_Filesystem', 'post_delete', '\OCA\Files_Sharing\Hooks', 'unshareChildren');
 
@@ -47,14 +51,15 @@ class Helper {
 	 * @param View $view
 	 * @return string $path
 	 */
-	public static function generateUniqueTarget($path, $excludeList, $view) {
+	public static function generateUniqueTarget($path, $excludeList, $view)
+	{
 		$pathinfo = pathinfo($path);
-		$ext = isset($pathinfo['extension']) ? '.'.$pathinfo['extension'] : '';
+		$ext = isset($pathinfo['extension']) ? '.' . $pathinfo['extension'] : '';
 		$name = $pathinfo['filename'];
 		$dir = $pathinfo['dirname'];
 		$i = 2;
 		while ($view->file_exists($path) || in_array($path, $excludeList)) {
-			$path = Filesystem::normalizePath($dir . '/' . $name . ' ('.$i.')' . $ext);
+			$path = Filesystem::normalizePath($dir . '/' . $name . ' (' . $i . ')' . $ext);
 			$i++;
 		}
 
@@ -68,7 +73,8 @@ class Helper {
 	 * @param string|null $userId
 	 * @return string
 	 */
-	public static function getShareFolder(View $view = null, string $userId = null): string {
+	public static function getShareFolder(View $view = null, string $userId = null): string
+	{
 		if ($view === null) {
 			$view = Filesystem::getView();
 		}
@@ -106,7 +112,8 @@ class Helper {
 	 *
 	 * @param string $shareFolder
 	 */
-	public static function setShareFolder($shareFolder) {
+	public static function setShareFolder($shareFolder)
+	{
 		\OC::$server->getConfig()->setSystemValue('share_folder', $shareFolder);
 	}
 }

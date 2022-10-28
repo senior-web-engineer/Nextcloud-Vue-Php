@@ -26,6 +26,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Notification;
 
 use OCP\Files\IRootFolder;
@@ -42,7 +43,8 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 
-class Notifier implements INotifier {
+class Notifier implements INotifier
+{
 	public const INCOMING_USER_SHARE = 'incoming_user_share';
 	public const INCOMING_GROUP_SHARE = 'incoming_group_share';
 
@@ -59,12 +61,14 @@ class Notifier implements INotifier {
 	/** @var IURLGenerator */
 	protected $url;
 
-	public function __construct(IFactory $l10nFactory,
-								IManager $shareManager,
-								IRootFolder $rootFolder,
-								IGroupManager $groupManager,
-								IUserManager $userManager,
-								IURLGenerator $url) {
+	public function __construct(
+		IFactory $l10nFactory,
+		IManager $shareManager,
+		IRootFolder $rootFolder,
+		IGroupManager $groupManager,
+		IUserManager $userManager,
+		IURLGenerator $url
+	) {
 		$this->l10nFactory = $l10nFactory;
 		$this->shareManager = $shareManager;
 		$this->rootFolder = $rootFolder;
@@ -79,7 +83,8 @@ class Notifier implements INotifier {
 	 * @return string
 	 * @since 17.0.0
 	 */
-	public function getID(): string {
+	public function getID(): string
+	{
 		return 'files_sharing';
 	}
 
@@ -89,7 +94,8 @@ class Notifier implements INotifier {
 	 * @return string
 	 * @since 17.0.0
 	 */
-	public function getName(): string {
+	public function getName(): string
+	{
 		return $this->l10nFactory->get('files_sharing')->t('File sharing');
 	}
 
@@ -101,10 +107,13 @@ class Notifier implements INotifier {
 	 * @throws AlreadyProcessedException When the notification is not needed anymore and should be deleted
 	 * @since 9.0.0
 	 */
-	public function prepare(INotification $notification, string $languageCode): INotification {
-		if ($notification->getApp() !== 'files_sharing' ||
+	public function prepare(INotification $notification, string $languageCode): INotification
+	{
+		if (
+			$notification->getApp() !== 'files_sharing' ||
 			($notification->getSubject() !== 'expiresTomorrow' &&
-				$notification->getObjectType() !== 'share')) {
+				$notification->getObjectType() !== 'share')
+		) {
 			throw new \InvalidArgumentException('Unhandled app or subject');
 		}
 
@@ -125,7 +134,8 @@ class Notifier implements INotifier {
 		return $notification;
 	}
 
-	protected function parseShareExpiration(IShare $share, INotification $notification, IL10N $l): INotification {
+	protected function parseShareExpiration(IShare $share, INotification $notification, IL10N $l): INotification
+	{
 		$node = $share->getNode();
 		$userFolder = $this->rootFolder->getUserFolder($notification->getUser());
 		$path = $userFolder->getRelativePath($node->getPath());
@@ -148,7 +158,8 @@ class Notifier implements INotifier {
 		return $notification;
 	}
 
-	protected function parseShareInvitation(IShare $share, INotification $notification, IL10N $l): INotification {
+	protected function parseShareInvitation(IShare $share, INotification $notification, IL10N $l): INotification
+	{
 		if ($share->getShareType() === IShare::TYPE_USER) {
 			if ($share->getStatus() !== IShare::STATUS_PENDING) {
 				throw new AlreadyProcessedException();

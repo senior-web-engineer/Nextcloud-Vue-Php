@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -31,12 +32,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\ShareBackend;
 
 use OCA\FederatedFileSharing\FederatedShareProvider;
 use OCP\Share\IShare;
 
-class File implements \OCP\Share_Backend_File_Dependent {
+class File implements \OCP\Share_Backend_File_Dependent
+{
 	public const FORMAT_SHARED_STORAGE = 0;
 	public const FORMAT_GET_FOLDER_CONTENTS = 1;
 	public const FORMAT_FILE_APP_ROOT = 2;
@@ -50,7 +53,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 	/** @var FederatedShareProvider */
 	private $federatedShareProvider;
 
-	public function __construct(FederatedShareProvider $federatedShareProvider = null) {
+	public function __construct(FederatedShareProvider $federatedShareProvider = null)
+	{
 		if ($federatedShareProvider) {
 			$this->federatedShareProvider = $federatedShareProvider;
 		} else {
@@ -58,7 +62,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 		}
 	}
 
-	public function isValidSource($itemSource, $uidOwner) {
+	public function isValidSource($itemSource, $uidOwner)
+	{
 		try {
 			$path = \OC\Files\Filesystem::getPath($itemSource);
 			// FIXME: attributes should not be set here,
@@ -71,7 +76,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 		}
 	}
 
-	public function getFilePath($itemSource, $uidOwner) {
+	public function getFilePath($itemSource, $uidOwner)
+	{
 		if (isset($this->path)) {
 			$path = $this->path;
 			$this->path = null;
@@ -94,7 +100,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 	 * @param array $exclude (optional)
 	 * @return string
 	 */
-	public function generateTarget($itemSource, $shareWith, $exclude = null) {
+	public function generateTarget($itemSource, $shareWith, $exclude = null)
+	{
 		$shareFolder = \OCA\Files_Sharing\Helper::getShareFolder();
 		$target = \OC\Files\Filesystem::normalizePath($shareFolder . '/' . basename($itemSource));
 
@@ -122,7 +129,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 		return \OCA\Files_Sharing\Helper::generateUniqueTarget($target, $excludeList, $view);
 	}
 
-	public function formatItems($items, $format, $parameters = null) {
+	public function formatItems($items, $format, $parameters = null)
+	{
 		if ($format === self::FORMAT_SHARED_STORAGE) {
 			// Only 1 item should come through for this format call
 			$item = array_shift($items);
@@ -190,7 +198,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 	 * @param int $shareType
 	 * @return boolean
 	 */
-	public function isShareTypeAllowed($shareType) {
+	public function isShareTypeAllowed($shareType)
+	{
 		if ($shareType === IShare::TYPE_REMOTE) {
 			return $this->federatedShareProvider->isOutgoingServer2serverShareEnabled();
 		}
@@ -207,7 +216,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 	 * @param array $source
 	 * @return array source item
 	 */
-	protected static function resolveReshares($source) {
+	protected static function resolveReshares($source)
+	{
 		if (isset($source['parent'])) {
 			$parent = $source['parent'];
 			while (isset($parent)) {
@@ -244,7 +254,8 @@ class File implements \OCP\Share_Backend_File_Dependent {
 	 * @param array $share
 	 * @return array|false source item
 	 */
-	public static function getSource($target, $share) {
+	public static function getSource($target, $share)
+	{
 		if ($share['item_type'] === 'folder' && $target !== '') {
 			// note: in case of ext storage mount points the path might be empty
 			// which would cause a leading slash to appear

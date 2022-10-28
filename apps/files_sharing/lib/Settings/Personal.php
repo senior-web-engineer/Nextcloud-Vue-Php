@@ -25,6 +25,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Settings;
 
 use OCA\Files_Sharing\AppInfo\Application;
@@ -33,7 +34,8 @@ use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 use OCP\Settings\ISettings;
 
-class Personal implements ISettings {
+class Personal implements ISettings
+{
 
 	/** @var IConfig */
 	private $config;
@@ -42,13 +44,15 @@ class Personal implements ISettings {
 	/** @var string */
 	private $userId;
 
-	public function __construct(IConfig $config, IInitialState $initialState, string $userId) {
+	public function __construct(IConfig $config, IInitialState $initialState, string $userId)
+	{
 		$this->config = $config;
 		$this->initialState = $initialState;
 		$this->userId = $userId;
 	}
 
-	public function getForm(): TemplateResponse {
+	public function getForm(): TemplateResponse
+	{
 		$defaultAcceptSystemConfig = $this->config->getSystemValueBool('sharing.enable_share_accept', false) ? 'no' : 'yes';
 		$shareFolderSystemConfig = $this->config->getSystemValue('share_folder', '/');
 		$acceptDefault = $this->config->getUserValue($this->userId, Application::APP_ID, 'default_accept', $defaultAcceptSystemConfig) === 'yes';
@@ -63,11 +67,13 @@ class Personal implements ISettings {
 		return new TemplateResponse('files_sharing', 'Settings/personal');
 	}
 
-	public function getSection(): string {
+	public function getSection(): string
+	{
 		return 'sharing';
 	}
 
-	public function getPriority(): int {
+	public function getPriority(): int
+	{
 		return 90;
 	}
 }

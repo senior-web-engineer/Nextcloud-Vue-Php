@@ -25,6 +25,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\Connector\Sabre;
 
 use OCP\Share\IShare;
@@ -34,13 +35,15 @@ use Sabre\Xml\XmlSerializable;
 /**
  * This property contains multiple "sharee" elements, each containing a share sharee
  */
-class ShareeList implements XmlSerializable {
-	public const NS_NEXTCLOUD = 'http://nextcloud.org/ns';
+class ShareeList implements XmlSerializable
+{
+	public const NS_NEXTCLOUD = 'http:// /ns';
 
 	/** @var IShare[] */
 	private $shares;
 
-	public function __construct(array $shares) {
+	public function __construct(array $shares)
+	{
 		$this->shares = $shares;
 	}
 
@@ -50,7 +53,8 @@ class ShareeList implements XmlSerializable {
 	 * @param Writer $writer
 	 * @return void
 	 */
-	public function xmlSerialize(Writer $writer) {
+	public function xmlSerialize(Writer $writer)
+	{
 		foreach ($this->shares as $share) {
 			$writer->startElement('{' . self::NS_NEXTCLOUD . '}sharee');
 			$writer->writeElement('{' . self::NS_NEXTCLOUD . '}id', $share->getSharedWith());

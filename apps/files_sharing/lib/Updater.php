@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -24,18 +25,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Files\Mount\MountPoint;
 use OCP\Constants;
 use OCP\Share\IShare;
 
-class Updater {
+class Updater
+{
 
 	/**
 	 * @param array $params
 	 */
-	public static function renameHook($params) {
+	public static function renameHook($params)
+	{
 		self::renameChildren($params['oldpath'], $params['newpath']);
 		self::moveShareToShare($params['newpath']);
 	}
@@ -50,7 +54,8 @@ class Updater {
 	 *
 	 * @param string $path
 	 */
-	private static function moveShareToShare($path) {
+	private static function moveShareToShare($path)
+	{
 		$userFolder = \OC::$server->getUserFolder();
 
 		// If the user folder can't be constructed (e.g. link share) just return.
@@ -99,7 +104,8 @@ class Updater {
 	 * @param string $oldPath old path relative to data/user/files
 	 * @param string $newPath new path relative to data/user/files
 	 */
-	private static function renameChildren($oldPath, $newPath) {
+	private static function renameChildren($oldPath, $newPath)
+	{
 		$absNewPath = \OC\Files\Filesystem::normalizePath('/' . \OC_User::getUser() . '/files/' . $newPath);
 		$absOldPath = \OC\Files\Filesystem::normalizePath('/' . \OC_User::getUser() . '/files/' . $oldPath);
 

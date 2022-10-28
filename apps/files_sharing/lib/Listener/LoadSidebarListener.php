@@ -23,6 +23,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Listener;
 
 use OCA\Files_Sharing\AppInfo\Application;
@@ -31,8 +32,10 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
 
-class LoadSidebarListener implements IEventListener {
-	public function handle(Event $event): void {
+class LoadSidebarListener implements IEventListener
+{
+	public function handle(Event $event): void
+	{
 		if (!($event instanceof LoadSidebar)) {
 			return;
 		}

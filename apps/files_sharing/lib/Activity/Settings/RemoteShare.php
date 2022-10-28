@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -22,14 +23,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Settings;
 
-class RemoteShare extends ShareActivitySettings {
+class RemoteShare extends ShareActivitySettings
+{
 	/**
 	 * @return string Lowercase a-z and underscore only identifier
 	 * @since 11.0.0
 	 */
-	public function getIdentifier() {
+	public function getIdentifier()
+	{
 		return 'remote_share';
 	}
 
@@ -37,7 +41,8 @@ class RemoteShare extends ShareActivitySettings {
 	 * @return string A translated string
 	 * @since 11.0.0
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->l->t('A file or folder was shared from <strong>another server</strong>');
 	}
 
@@ -47,7 +52,8 @@ class RemoteShare extends ShareActivitySettings {
 	 * priority values. It is required to return a value between 0 and 100.
 	 * @since 11.0.0
 	 */
-	public function getPriority() {
+	public function getPriority()
+	{
 		return 11;
 	}
 
@@ -55,7 +61,8 @@ class RemoteShare extends ShareActivitySettings {
 	 * @return bool True when the option can be changed for the stream
 	 * @since 11.0.0
 	 */
-	public function canChangeStream() {
+	public function canChangeStream()
+	{
 		return true;
 	}
 
@@ -63,7 +70,8 @@ class RemoteShare extends ShareActivitySettings {
 	 * @return bool True when the option can be changed for the stream
 	 * @since 11.0.0
 	 */
-	public function isDefaultEnabledStream() {
+	public function isDefaultEnabledStream()
+	{
 		return true;
 	}
 
@@ -71,7 +79,8 @@ class RemoteShare extends ShareActivitySettings {
 	 * @return bool True when the option can be changed for the mail
 	 * @since 11.0.0
 	 */
-	public function canChangeMail() {
+	public function canChangeMail()
+	{
 		return true;
 	}
 
@@ -79,7 +88,8 @@ class RemoteShare extends ShareActivitySettings {
 	 * @return bool True when the option can be changed for the stream
 	 * @since 11.0.0
 	 */
-	public function isDefaultEnabledMail() {
+	public function isDefaultEnabledMail()
+	{
 		return false;
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -30,7 +31,8 @@ use OC\Files\ObjectStore\NoopScanner;
 /**
  * Scanner for SharedStorage
  */
-class Scanner extends \OC\Files\Cache\Scanner {
+class Scanner extends \OC\Files\Cache\Scanner
+{
 	/**
 	 * @var \OCA\Files_Sharing\SharedStorage $storage
 	 */
@@ -46,7 +48,8 @@ class Scanner extends \OC\Files\Cache\Scanner {
 	 *
 	 * @return array|null an array of metadata of the file
 	 */
-	public function getData($path) {
+	public function getData($path)
+	{
 		$data = parent::getData($path);
 		if ($data === null) {
 			return null;
@@ -56,7 +59,8 @@ class Scanner extends \OC\Files\Cache\Scanner {
 		return $data;
 	}
 
-	private function getSourceScanner() {
+	private function getSourceScanner()
+	{
 		if ($this->sourceScanner) {
 			return $this->sourceScanner;
 		}
@@ -70,7 +74,8 @@ class Scanner extends \OC\Files\Cache\Scanner {
 		}
 	}
 
-	public function scanFile($file, $reuseExisting = 0, $parentId = -1, $cacheData = null, $lock = true, $data = null) {
+	public function scanFile($file, $reuseExisting = 0, $parentId = -1, $cacheData = null, $lock = true, $data = null)
+	{
 		$sourceScanner = $this->getSourceScanner();
 		if ($sourceScanner instanceof NoopScanner) {
 			return [];

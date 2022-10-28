@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -21,6 +22,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Providers;
 
 use OCP\Activity\IEvent;
@@ -35,7 +37,8 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 
-abstract class Base implements IProvider {
+abstract class Base implements IProvider
+{
 
 	/** @var IFactory */
 	protected $languageFactory;
@@ -64,13 +67,15 @@ abstract class Base implements IProvider {
 	/** @var array */
 	protected $displayNames = [];
 
-	public function __construct(IFactory $languageFactory,
-								IURLGenerator $url,
-								IManager $activityManager,
-								IUserManager $userManager,
-								ICloudIdManager $cloudIdManager,
-								IContactsManager $contactsManager,
-								IEventMerger $eventMerger) {
+	public function __construct(
+		IFactory $languageFactory,
+		IURLGenerator $url,
+		IManager $activityManager,
+		IUserManager $userManager,
+		ICloudIdManager $cloudIdManager,
+		IContactsManager $contactsManager,
+		IEventMerger $eventMerger
+	) {
 		$this->languageFactory = $languageFactory;
 		$this->url = $url;
 		$this->activityManager = $activityManager;
@@ -88,7 +93,8 @@ abstract class Base implements IProvider {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parse($language, IEvent $event, IEvent $previousEvent = null) {
+	public function parse($language, IEvent $event, IEvent $previousEvent = null)
+	{
 		if ($event->getApp() !== 'files_sharing') {
 			throw new \InvalidArgumentException();
 		}
@@ -129,7 +135,8 @@ abstract class Base implements IProvider {
 	 * @param array $parameters
 	 * @throws \InvalidArgumentException
 	 */
-	protected function setSubjects(IEvent $event, $subject, array $parameters) {
+	protected function setSubjects(IEvent $event, $subject, array $parameters)
+	{
 		$placeholders = $replacements = [];
 		foreach ($parameters as $placeholder => $parameter) {
 			$placeholders[] = '{' . $placeholder . '}';
@@ -150,7 +157,8 @@ abstract class Base implements IProvider {
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	protected function getFile($parameter, IEvent $event = null) {
+	protected function getFile($parameter, IEvent $event = null)
+	{
 		if (is_array($parameter)) {
 			$path = reset($parameter);
 			$id = (string) key($parameter);
@@ -175,7 +183,8 @@ abstract class Base implements IProvider {
 	 * @param string $uid
 	 * @return array
 	 */
-	protected function getUser($uid) {
+	protected function getUser($uid)
+	{
 		// First try local user
 		$user = $this->userManager->get($uid);
 		if ($user instanceof IUser) {
@@ -205,7 +214,8 @@ abstract class Base implements IProvider {
 		];
 	}
 
-	protected function getDisplayNameFromAddressBook(string $search): string {
+	protected function getDisplayNameFromAddressBook(string $search): string
+	{
 		if (isset($this->displayNames[$search])) {
 			return $this->displayNames[$search];
 		}

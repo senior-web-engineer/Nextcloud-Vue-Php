@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -21,13 +22,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity;
 
 use OCP\Activity\IFilter;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 
-class Filter implements IFilter {
+class Filter implements IFilter
+{
 	public const TYPE_REMOTE_SHARE = 'remote_share';
 	public const TYPE_SHARED = 'shared';
 
@@ -37,7 +40,8 @@ class Filter implements IFilter {
 	/** @var IURLGenerator */
 	protected $url;
 
-	public function __construct(IL10N $l, IURLGenerator $url) {
+	public function __construct(IL10N $l, IURLGenerator $url)
+	{
 		$this->l = $l;
 		$this->url = $url;
 	}
@@ -46,7 +50,8 @@ class Filter implements IFilter {
 	 * @return string Lowercase a-z only identifier
 	 * @since 11.0.0
 	 */
-	public function getIdentifier() {
+	public function getIdentifier()
+	{
 		return 'files_sharing';
 	}
 
@@ -54,7 +59,8 @@ class Filter implements IFilter {
 	 * @return string A translated string
 	 * @since 11.0.0
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->l->t('File shares');
 	}
 
@@ -62,7 +68,8 @@ class Filter implements IFilter {
 	 * @return int
 	 * @since 11.0.0
 	 */
-	public function getPriority() {
+	public function getPriority()
+	{
 		return 31;
 	}
 
@@ -70,7 +77,8 @@ class Filter implements IFilter {
 	 * @return string Full URL to an icon, empty string when none is given
 	 * @since 11.0.0
 	 */
-	public function getIcon() {
+	public function getIcon()
+	{
 		return $this->url->getAbsoluteURL($this->url->imagePath('core', 'actions/share.svg'));
 	}
 
@@ -79,7 +87,8 @@ class Filter implements IFilter {
 	 * @return string[] An array of allowed apps from which activities should be displayed
 	 * @since 11.0.0
 	 */
-	public function filterTypes(array $types) {
+	public function filterTypes(array $types)
+	{
 		return array_intersect([
 			self::TYPE_SHARED,
 			self::TYPE_REMOTE_SHARE,
@@ -91,7 +100,8 @@ class Filter implements IFilter {
 	 * @return string[] An array of allowed apps from which activities should be displayed
 	 * @since 11.0.0
 	 */
-	public function allowedApps() {
+	public function allowedApps()
+	{
 		return [
 			'files_sharing',
 			'files_downloadactivity',

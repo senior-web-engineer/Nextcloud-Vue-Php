@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Providers;
 
 use OCP\Activity\IEvent;
@@ -33,19 +35,22 @@ use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 
-class RemoteShares extends Base {
+class RemoteShares extends Base
+{
 	public const SUBJECT_REMOTE_SHARE_ACCEPTED = 'remote_share_accepted';
 	public const SUBJECT_REMOTE_SHARE_DECLINED = 'remote_share_declined';
 	public const SUBJECT_REMOTE_SHARE_RECEIVED = 'remote_share_received';
 	public const SUBJECT_REMOTE_SHARE_UNSHARED = 'remote_share_unshared';
 
-	public function __construct(IFactory $languageFactory,
-								IURLGenerator $url,
-								IManager $activityManager,
-								IUserManager $userManager,
-								ICloudIdManager $cloudIdManager,
-								IContactsManager $contactsManager,
-								IEventMerger $eventMerger) {
+	public function __construct(
+		IFactory $languageFactory,
+		IURLGenerator $url,
+		IManager $activityManager,
+		IUserManager $userManager,
+		ICloudIdManager $cloudIdManager,
+		IContactsManager $contactsManager,
+		IEventMerger $eventMerger
+	) {
 		parent::__construct($languageFactory, $url, $activityManager, $userManager, $cloudIdManager, $contactsManager, $eventMerger);
 	}
 
@@ -55,7 +60,8 @@ class RemoteShares extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseShortVersion(IEvent $event) {
+	public function parseShortVersion(IEvent $event)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
 		if ($event->getSubject() === self::SUBJECT_REMOTE_SHARE_ACCEPTED) {
@@ -83,7 +89,8 @@ class RemoteShares extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null) {
+	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
 		if ($event->getSubject() === self::SUBJECT_REMOTE_SHARE_RECEIVED) {
@@ -108,7 +115,8 @@ class RemoteShares extends Base {
 		return $event;
 	}
 
-	protected function getParsedParameters(IEvent $event) {
+	protected function getParsedParameters(IEvent $event)
+	{
 		$subject = $event->getSubject();
 		$parameters = $event->getSubjectParameters();
 

@@ -24,6 +24,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Notification;
 
 use OCP\IGroup;
@@ -35,7 +36,8 @@ use OCP\Share\IManager as IShareManager;
 use OCP\Share\IShare;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-class Listener {
+class Listener
+{
 
 	/** @var INotificationManager */
 	protected $notificationManager;
@@ -57,7 +59,8 @@ class Listener {
 	/**
 	 * @param GenericEvent $event
 	 */
-	public function shareNotification(GenericEvent $event): void {
+	public function shareNotification(GenericEvent $event): void
+	{
 		/** @var IShare $share */
 		$share = $event->getSubject();
 		$notification = $this->instantiateNotification($share);
@@ -71,8 +74,10 @@ class Listener {
 			$group = $this->groupManager->get($share->getSharedWith());
 
 			foreach ($group->getUsers() as $user) {
-				if ($user->getUID() === $share->getShareOwner() ||
-					$user->getUID() === $share->getSharedBy()) {
+				if (
+					$user->getUID() === $share->getShareOwner() ||
+					$user->getUID() === $share->getSharedBy()
+				) {
 					continue;
 				}
 
@@ -85,7 +90,8 @@ class Listener {
 	/**
 	 * @param GenericEvent $event
 	 */
-	public function userAddedToGroup(GenericEvent $event): void {
+	public function userAddedToGroup(GenericEvent $event): void
+	{
 		/** @var IGroup $group */
 		$group = $event->getSubject();
 		/** @var IUser $user */
@@ -103,8 +109,10 @@ class Listener {
 					continue;
 				}
 
-				if ($user->getUID() === $share->getShareOwner() ||
-					$user->getUID() === $share->getSharedBy()) {
+				if (
+					$user->getUID() === $share->getShareOwner() ||
+					$user->getUID() === $share->getSharedBy()
+				) {
 					continue;
 				}
 
@@ -121,7 +129,8 @@ class Listener {
 	 * @param IShare $share
 	 * @return INotification
 	 */
-	protected function instantiateNotification(IShare $share): INotification {
+	protected function instantiateNotification(IShare $share): INotification
+	{
 		$notification = $this->notificationManager->createNotification();
 		$notification
 			->setApp('files_sharing')

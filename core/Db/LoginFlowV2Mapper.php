@@ -23,6 +23,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OC\Core\Db;
 
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -30,13 +31,15 @@ use OCP\AppFramework\Db\QBMapper;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IDBConnection;
 
-class LoginFlowV2Mapper extends QBMapper {
+class LoginFlowV2Mapper extends QBMapper
+{
 	private const lifetime = 1200;
 
 	/** @var ITimeFactory */
 	private $timeFactory;
 
-	public function __construct(IDBConnection $db, ITimeFactory $timeFactory) {
+	public function __construct(IDBConnection $db, ITimeFactory $timeFactory)
+	{
 		parent::__construct($db, 'login_flow_v2', LoginFlowV2::class);
 		$this->timeFactory = $timeFactory;
 	}
@@ -46,7 +49,8 @@ class LoginFlowV2Mapper extends QBMapper {
 	 * @return LoginFlowV2
 	 * @throws DoesNotExistException
 	 */
-	public function getByPollToken(string $pollToken): LoginFlowV2 {
+	public function getByPollToken(string $pollToken): LoginFlowV2
+	{
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('*')
 			->from($this->getTableName())
@@ -63,7 +67,8 @@ class LoginFlowV2Mapper extends QBMapper {
 	 * @return LoginFlowV2
 	 * @throws DoesNotExistException
 	 */
-	public function getByLoginToken(string $loginToken): LoginFlowV2 {
+	public function getByLoginToken(string $loginToken): LoginFlowV2
+	{
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('*')
 			->from($this->getTableName())
@@ -75,7 +80,8 @@ class LoginFlowV2Mapper extends QBMapper {
 		return $this->validateTimestamp($entity);
 	}
 
-	public function cleanup(): void {
+	public function cleanup(): void
+	{
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete($this->getTableName())
 			->where(
@@ -87,41 +93,45 @@ class LoginFlowV2Mapper extends QBMapper {
 
 	// @kjh
 	// insert or update last login IP
-	public function insertLastLoginIP($userId, $loginIP): void {
+	public function insertLastLoginIP($userId, $loginIP): void
+	{
 		$qb = $this->db->getQueryBuilder();
 		$lastLoginIP = $this->getLastLoginIP($userId);
-		if($lastLoginIP !=''){
+		if ($lastLoginIP != '') {
 			$qb->update('preferences')
-			->set('configvalue', $qb->createNamedParameter($loginIP))
-			->where($qb->expr()->eq('userid', $qb->createNamedParameter($userId)))
-			->andWhere($qb->expr()->eq('appid', $qb->createNamedParameter('login')))
-			->andWhere($qb->expr()->eq('configkey', $qb->createNamedParameter('lastLoginIP')));
+				->set('configvalue', $qb->createNamedParameter($loginIP))
+				->where($qb->expr()->eq('userid', $qb->createNamedParameter($userId)))
+				->andWhere($qb->expr()->eq('appid', $qb->createNamedParameter('login')))
+				->andWhere($qb->expr()->eq('configkey', $qb->createNamedParameter('lastLoginIP')));
 		} else {
 			$qb->insert('preferences')
-			->setValue('userid', $qb->createNamedParameter($userId))
-			->setValue('appid', $qb->createNamedParameter('login'))
-			->setValue('configkey', $qb->createNamedParameter('lastLoginIP'))
-			->setValue('configvalue', $qb->createNamedParameter($loginIP));
+				->setValue('userid', $qb->createNamedParameter($userId))
+				->setValue('appid', $qb->createNamedParameter('login'))
+				->setValue('configkey', $qb->createNamedParameter('lastLoginIP'))
+				->setValue('configvalue', $qb->createNamedParameter($loginIP));
 		}
 		$qb->execute();
 	}
 
 	// update user 2fa setting
-	public function updateTFASetting($userId, $val): void {
+	public function updateTFASetting($userId, $val): void
+	{
 		$this->updateProviderSetting($userId, $val);
 	}
 
 	// check last login IP
-	public function checkLoginIp($userId, $currentLoginIP){
+	public function checkLoginIp($userId, $currentLoginIP)
+	{
 		$lastLoginIP = $this->getLastLoginIP($userId);
 		$lastDomain = $this->getDomain($lastLoginIP);
 		$currentDomain = $this->getDomain($currentLoginIP);
-		if($lastDomain == $currentDomain) $this->updateProviderSetting($userId, 0);
+		if ($lastDomain == $currentDomain) $this->updateProviderSetting($userId, 0);
 		else $this->updateProviderSetting($userId, 1);
 	}
 
 	// update provider setting
-	private function updateProviderSetting($userId, $val): void {
+	private function updateProviderSetting($userId, $val): void
+	{
 		$qb = $this->db->getQueryBuilder();
 		$qb->update('twofactor_providers')
 			->set('enabled', $qb->createNamedParameter($val))
@@ -131,7 +141,8 @@ class LoginFlowV2Mapper extends QBMapper {
 	}
 
 	// get last login IP
-	private function getLastLoginIP($userId) {
+	private function getLastLoginIP($userId)
+	{
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('configvalue')
 			->from('preferences')
@@ -145,11 +156,11 @@ class LoginFlowV2Mapper extends QBMapper {
 		if (!$one) return '';
 		return $one;
 	}
-	
+
 	// determine outgoing or incoming
 	private function getDomain($ip)
 	{
-		if(!$ip) return '';
+		if (!$ip) return '';
 		$domain = explode('.', $ip);
 		return $domain[0];
 	}
@@ -161,7 +172,8 @@ class LoginFlowV2Mapper extends QBMapper {
 	 * @return LoginFlowV2
 	 * @throws DoesNotExistException
 	 */
-	private function validateTimestamp(LoginFlowV2 $flowV2): LoginFlowV2 {
+	private function validateTimestamp(LoginFlowV2 $flowV2): LoginFlowV2
+	{
 		if ($flowV2->getTimestamp() < ($this->timeFactory->getTime() - self::lifetime)) {
 			$this->delete($flowV2);
 			throw new DoesNotExistException('Token expired');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -43,7 +44,8 @@ if (!is_array($files_list)) {
 /**
  * @psalm-taint-escape cookie
  */
-function cleanCookieInput(string $value): string {
+function cleanCookieInput(string $value): string
+{
 	if (strlen($value) > 32) {
 		return '';
 	}
@@ -65,7 +67,7 @@ if (isset($_GET['downloadStartSecret'])) {
 	}
 }
 
-$server_params = [ 'head' => \OC::$server->getRequest()->getMethod() === 'HEAD' ];
+$server_params = ['head' => \OC::$server->getRequest()->getMethod() === 'HEAD'];
 
 /**
  * Http range requests support

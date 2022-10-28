@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -24,6 +25,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OCP\Capabilities\ICapability;
@@ -36,14 +38,16 @@ use OCP\Share\IManager;
  *
  * @package OCA\Files_Sharing
  */
-class Capabilities implements ICapability {
+class Capabilities implements ICapability
+{
 
 	/** @var IConfig */
 	private $config;
 	/** @var IManager */
 	private $shareManager;
 
-	public function __construct(IConfig $config, IManager $shareManager) {
+	public function __construct(IConfig $config, IManager $shareManager)
+	{
 		$this->config = $config;
 		$this->shareManager = $shareManager;
 	}
@@ -53,7 +57,8 @@ class Capabilities implements ICapability {
 	 *
 	 * @return array
 	 */
-	public function getCapabilities() {
+	public function getCapabilities()
+	{
 		$res = [];
 
 		if (!$this->shareManager->shareApiEnabled()) {

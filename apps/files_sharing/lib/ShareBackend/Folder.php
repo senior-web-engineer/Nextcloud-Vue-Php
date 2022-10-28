@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -26,9 +27,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\ShareBackend;
 
-class Folder extends File implements \OCP\Share_Backend_Collection {
+class Folder extends File implements \OCP\Share_Backend_Collection
+{
 
 	/**
 	 * get shared parents
@@ -38,7 +41,8 @@ class Folder extends File implements \OCP\Share_Backend_Collection {
 	 * @param string $owner owner of the item
 	 * @return array with shares
 	 */
-	public function getParents($itemSource, $shareWith = null, $owner = null) {
+	public function getParents($itemSource, $shareWith = null, $owner = null)
+	{
 		$result = [];
 		$parent = $this->getParentId($itemSource);
 
@@ -75,7 +79,8 @@ class Folder extends File implements \OCP\Share_Backend_Collection {
 	 * @param int $child file cache ID of child
 	 * @return mixed parent ID or null
 	 */
-	private function getParentId($child) {
+	private function getParentId($child)
+	{
 		$qb = \OC::$server->getDatabaseConnection()->getQueryBuilder();
 		$qb->select('parent')
 			->from('filecache')
@@ -88,7 +93,8 @@ class Folder extends File implements \OCP\Share_Backend_Collection {
 		return $row ? $row['parent'] : null;
 	}
 
-	public function getChildren($itemSource) {
+	public function getChildren($itemSource)
+	{
 		$children = [];
 		$parents = [$itemSource];
 

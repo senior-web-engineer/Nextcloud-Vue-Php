@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -23,6 +24,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\External;
 
 use OC\ForbiddenException;
@@ -30,7 +32,8 @@ use OCP\Files\NotFoundException;
 use OCP\Files\StorageInvalidException;
 use OCP\Files\StorageNotAvailableException;
 
-class Scanner extends \OC\Files\Cache\Scanner {
+class Scanner extends \OC\Files\Cache\Scanner
+{
 	/** @var \OCA\Files_Sharing\External\Storage */
 	protected $storage;
 
@@ -47,7 +50,8 @@ class Scanner extends \OC\Files\Cache\Scanner {
 	 * @param bool $lock set to false to disable getting an additional read lock during scanning
 	 * @return array | null an array of metadata of the scanned file
 	 */
-	public function scanFile($file, $reuseExisting = 0, $parentId = -1, $cacheData = null, $lock = true, $data = null) {
+	public function scanFile($file, $reuseExisting = 0, $parentId = -1, $cacheData = null, $lock = true, $data = null)
+	{
 		try {
 			return parent::scanFile($file, $reuseExisting);
 		} catch (ForbiddenException $e) {

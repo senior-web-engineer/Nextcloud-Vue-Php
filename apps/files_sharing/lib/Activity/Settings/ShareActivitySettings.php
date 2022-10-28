@@ -23,27 +23,32 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Settings;
 
 use OCP\Activity\ActivitySettings;
 use OCP\IL10N;
 
-abstract class ShareActivitySettings extends ActivitySettings {
+abstract class ShareActivitySettings extends ActivitySettings
+{
 	/** @var IL10N */
 	protected $l;
 
 	/**
 	 * @param IL10N $l
 	 */
-	public function __construct(IL10N $l) {
+	public function __construct(IL10N $l)
+	{
 		$this->l = $l;
 	}
 
-	public function getGroupIdentifier() {
+	public function getGroupIdentifier()
+	{
 		return 'files';
 	}
 
-	public function getGroupName() {
+	public function getGroupName()
+	{
 		return $this->l->t('Files');
 	}
 }

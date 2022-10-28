@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OC;
 
 use OCP\IConfig;
@@ -29,7 +31,8 @@ use OCP\IDateTimeZone;
 use OCP\ILogger;
 use OCP\ISession;
 
-class DateTimeZone implements IDateTimeZone {
+class DateTimeZone implements IDateTimeZone
+{
 	/** @var IConfig */
 	protected $config;
 
@@ -42,7 +45,8 @@ class DateTimeZone implements IDateTimeZone {
 	 * @param IConfig $config
 	 * @param ISession $session
 	 */
-	public function __construct(IConfig $config, ISession $session) {
+	public function __construct(IConfig $config, ISession $session)
+	{
 		$this->config = $config;
 		$this->session = $session;
 	}
@@ -53,7 +57,8 @@ class DateTimeZone implements IDateTimeZone {
 	 * @param bool|int $timestamp
 	 * @return \DateTimeZone
 	 */
-	public function getTimeZone($timestamp = false) {
+	public function getTimeZone($timestamp = false)
+	{
 		$timeZone = $this->config->getUserValue($this->session->get('user_id'), 'core', 'timezone', null);
 		if ($timeZone === null) {
 			if ($this->session->exists('timezone')) {
@@ -80,7 +85,8 @@ class DateTimeZone implements IDateTimeZone {
 	 * @param bool|int $timestamp
 	 * @return \DateTimeZone
 	 */
-	protected function guessTimeZoneFromOffset($offset, $timestamp) {
+	protected function guessTimeZoneFromOffset($offset, $timestamp)
+	{
 		try {
 			// Note: the timeZone name is the inverse to the offset,
 			// so a positive offset means negative timeZone
@@ -122,7 +128,8 @@ class DateTimeZone implements IDateTimeZone {
 	 *
 	 * @return string
 	 */
-	protected function getDefaultTimeZone() {
+	protected function getDefaultTimeZone()
+	{
 		$serverTimeZone = date_default_timezone_get();
 		return $serverTimeZone ?: 'UTC';
 	}

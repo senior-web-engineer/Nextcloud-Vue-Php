@@ -23,6 +23,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Listener;
 
 use OC\EventDispatcher\SymfonyAdapter;
@@ -31,16 +32,19 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-class LegacyBeforeTemplateRenderedListener implements IEventListener {
+class LegacyBeforeTemplateRenderedListener implements IEventListener
+{
 
 	/** @var SymfonyAdapter */
 	private $dispatcher;
 
-	public function __construct(SymfonyAdapter $dispatcher) {
+	public function __construct(SymfonyAdapter $dispatcher)
+	{
 		$this->dispatcher = $dispatcher;
 	}
 
-	public function handle(Event $event): void {
+	public function handle(Event $event): void
+	{
 		if (!($event instanceof BeforeTemplateRenderedEvent)) {
 			return;
 		}

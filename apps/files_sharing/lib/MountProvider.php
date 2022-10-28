@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -26,6 +27,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Cache\CappedMemoryCache;
@@ -40,7 +42,8 @@ use OCP\IUser;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 
-class MountProvider implements IMountProvider {
+class MountProvider implements IMountProvider
+{
 	/**
 	 * @var \OCP\IConfig
 	 */
@@ -84,7 +87,8 @@ class MountProvider implements IMountProvider {
 	 * @param \OCP\Files\Storage\IStorageFactory $loader
 	 * @return \OCP\Files\Mount\IMountPoint[]
 	 */
-	public function getMountsForUser(IUser $user, IStorageFactory $loader) {
+	public function getMountsForUser(IUser $user, IStorageFactory $loader)
+	{
 		$shares = $this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_USER, null, -1);
 		$shares = array_merge($shares, $this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_GROUP, null, -1));
 		$shares = array_merge($shares, $this->shareManager->getSharedWith($user->getUID(), IShare::TYPE_CIRCLE, null, -1));
@@ -109,10 +113,12 @@ class MountProvider implements IMountProvider {
 				/** @var \OCP\Share\IShare $parentShare */
 				$parentShare = $share[0];
 
-				if ($parentShare->getStatus() !== IShare::STATUS_ACCEPTED &&
+				if (
+					$parentShare->getStatus() !== IShare::STATUS_ACCEPTED &&
 					($parentShare->getShareType() === IShare::TYPE_GROUP ||
 						$parentShare->getShareType() === IShare::TYPE_USERGROUP ||
-						$parentShare->getShareType() === IShare::TYPE_USER)) {
+						$parentShare->getShareType() === IShare::TYPE_USER)
+				) {
 					continue;
 				}
 
@@ -161,7 +167,8 @@ class MountProvider implements IMountProvider {
 	 * @return \OCP\Share\IShare[][] array of grouped shares, each element in the
 	 * array is a group which itself is an array of shares
 	 */
-	private function groupShares(array $shares) {
+	private function groupShares(array $shares)
+	{
 		$tmp = [];
 
 		foreach ($shares as $share) {
@@ -198,7 +205,8 @@ class MountProvider implements IMountProvider {
 	 * @param \OCP\IUser $user user
 	 * @return array Tuple of [superShare, groupedShares]
 	 */
-	private function buildSuperShares(array $allShares, \OCP\IUser $user) {
+	private function buildSuperShares(array $allShares, \OCP\IUser $user)
+	{
 		$result = [];
 
 		$groupedShares = $this->groupShares($allShares);

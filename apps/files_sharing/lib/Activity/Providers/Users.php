@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -23,11 +24,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Providers;
 
 use OCP\Activity\IEvent;
 
-class Users extends Base {
+class Users extends Base
+{
 	public const SUBJECT_SHARED_USER_SELF = 'shared_user_self';
 	public const SUBJECT_RESHARED_USER_BY = 'reshared_user_by';
 	public const SUBJECT_UNSHARED_USER_SELF = 'unshared_user_self';
@@ -47,7 +50,8 @@ class Users extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseShortVersion(IEvent $event) {
+	public function parseShortVersion(IEvent $event)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
 		if ($event->getSubject() === self::SUBJECT_SHARED_USER_SELF) {
@@ -91,7 +95,8 @@ class Users extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null) {
+	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
 		if ($event->getSubject() === self::SUBJECT_SHARED_USER_SELF) {
@@ -128,7 +133,8 @@ class Users extends Base {
 		return $event;
 	}
 
-	protected function getParsedParameters(IEvent $event) {
+	protected function getParsedParameters(IEvent $event)
+	{
 		$subject = $event->getSubject();
 		$parameters = $event->getSubjectParameters();
 

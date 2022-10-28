@@ -20,19 +20,19 @@
  *
  */
 
-import axios from '@nextcloud/axios'
+import axios from "@nextcloud/axios";
 
 /**
  * @param {any} url -
  */
-export default async function(url) {
+export default async function (url) {
 	const response = await axios({
-		method: 'PROPFIND',
+		method: "PROPFIND",
 		url,
 		data: `<?xml version="1.0"?>
 			<d:propfind  xmlns:d="DAV:"
 				xmlns:oc="http://owncloud.org/ns"
-				xmlns:nc="http://nextcloud.org/ns"
+				xmlns:nc="http:// /ns"
 				xmlns:ocs="http://open-collaboration-services.org/ns">
 			<d:prop>
 				<d:getlastmodified />
@@ -56,16 +56,18 @@ export default async function(url) {
 				<oc:share-types />
 			</d:prop>
 			</d:propfind>`,
-	})
+	});
 
 	// TODO: create new parser or use cdav-lib when available
-	const file = OCA.Files.App.fileList.filesClient._client.parseMultiStatus(response.data)
+	const file = OCA.Files.App.fileList.filesClient._client.parseMultiStatus(
+		response.data
+	);
 	// TODO: create new parser or use cdav-lib when available
-	const fileInfo = OCA.Files.App.fileList.filesClient._parseFileInfo(file[0])
+	const fileInfo = OCA.Files.App.fileList.filesClient._parseFileInfo(file[0]);
 
 	// TODO remove when no more legacy backbone is used
-	fileInfo.get = (key) => fileInfo[key]
-	fileInfo.isDirectory = () => fileInfo.mimetype === 'httpd/unix-directory'
+	fileInfo.get = (key) => fileInfo[key];
+	fileInfo.isDirectory = () => fileInfo.mimetype === "httpd/unix-directory";
 
-	return fileInfo
+	return fileInfo;
 }

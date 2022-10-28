@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  * @copyright Copyright (c) 2017, Georg Ehrke <oc.list@georgehrke.com>
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\DAV;
 
 use OCA\DAV\Connector\Sabre\Node;
@@ -33,7 +35,8 @@ use Sabre\DAV\PropPatch;
 use Sabre\DAV\Tree;
 use function array_intersect;
 
-class CustomPropertiesBackend implements BackendInterface {
+class CustomPropertiesBackend implements BackendInterface
+{
 
 	/** @var string */
 	private const TABLE_NAME = 'properties';
@@ -53,7 +56,7 @@ class CustomPropertiesBackend implements BackendInterface {
 		'{http://owncloud.org/ns}downloadURL',
 		'{http://owncloud.org/ns}dDC',
 		'{http://owncloud.org/ns}size',
-		'{http://nextcloud.org/ns}is-encrypted',
+		'{http:// /ns}is-encrypted',
 	];
 
 	/**
@@ -95,7 +98,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	public function __construct(
 		Tree $tree,
 		IDBConnection $connection,
-		IUser $user) {
+		IUser $user
+	) {
 		$this->tree = $tree;
 		$this->connection = $connection;
 		$this->user = $user;
@@ -108,7 +112,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 * @param PropFind $propFind
 	 * @return void
 	 */
-	public function propFind($path, PropFind $propFind) {
+	public function propFind($path, PropFind $propFind)
+	{
 		$requestedProps = $propFind->get404Properties();
 
 		// these might appear
@@ -159,7 +164,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 *
 	 * @return void
 	 */
-	public function propPatch($path, PropPatch $propPatch) {
+	public function propPatch($path, PropPatch $propPatch)
+	{
 		$propPatch->handleRemaining(function ($changedProps) use ($path) {
 			return $this->updateProperties($path, $changedProps);
 		});
@@ -170,7 +176,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 *
 	 * @param string $path path of node for which to delete properties
 	 */
-	public function delete($path) {
+	public function delete($path)
+	{
 		$statement = $this->connection->prepare(
 			'DELETE FROM `*PREFIX*properties` WHERE `userid` = ? AND `propertypath` = ?'
 		);
@@ -188,10 +195,11 @@ class CustomPropertiesBackend implements BackendInterface {
 	 *
 	 * @return void
 	 */
-	public function move($source, $destination) {
+	public function move($source, $destination)
+	{
 		$statement = $this->connection->prepare(
 			'UPDATE `*PREFIX*properties` SET `propertypath` = ?' .
-			' WHERE `userid` = ? AND `propertypath` = ?'
+				' WHERE `userid` = ? AND `propertypath` = ?'
 		);
 		$statement->execute([$this->formatPath($destination), $this->user->getUID(), $this->formatPath($source)]);
 		$statement->closeCursor();
@@ -203,7 +211,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 *
 	 * @return array
 	 */
-	private function getPublishedProperties(string $path, array $requestedProperties): array {
+	private function getPublishedProperties(string $path, array $requestedProperties): array
+	{
 		$allowedProps = array_intersect(self::PUBLISHED_READ_ONLY_PROPERTIES, $requestedProperties);
 
 		if (empty($allowedProps)) {
@@ -234,7 +243,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 * http://www.example.org/namespace#author If the array is empty, all
 	 * properties should be returned
 	 */
-	private function getUserProperties(string $path, array $requestedProperties) {
+	private function getUserProperties(string $path, array $requestedProperties)
+	{
 		if (isset($this->userCache[$path])) {
 			return $this->userCache[$path];
 		}
@@ -277,7 +287,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 *
 	 * @return bool
 	 */
-	private function updateProperties(string $path, array $properties) {
+	private function updateProperties(string $path, array $properties)
+	{
 		$deleteStatement = 'DELETE FROM `*PREFIX*properties`' .
 			' WHERE `userid` = ? AND `propertypath` = ? AND `propertyname` = ?';
 
@@ -294,7 +305,8 @@ class CustomPropertiesBackend implements BackendInterface {
 			// If it was null, we need to delete the property
 			if (is_null($propertyValue)) {
 				if (array_key_exists($propertyName, $existing)) {
-					$this->connection->executeUpdate($deleteStatement,
+					$this->connection->executeUpdate(
+						$deleteStatement,
 						[
 							$this->user->getUID(),
 							$this->formatPath($path),
@@ -303,13 +315,14 @@ class CustomPropertiesBackend implements BackendInterface {
 					);
 				}
 			} else {
-				if ($propertyValue instanceOf \Sabre\DAV\Xml\Property\Complex) {
+				if ($propertyValue instanceof \Sabre\DAV\Xml\Property\Complex) {
 					$propertyValue = $propertyValue->getXml();
 				} elseif (!is_string($propertyValue)) {
 					$propertyValue = (string)$propertyValue;
 				}
 				if (!array_key_exists($propertyName, $existing)) {
-					$this->connection->executeUpdate($insertStatement,
+					$this->connection->executeUpdate(
+						$insertStatement,
 						[
 							$this->user->getUID(),
 							$this->formatPath($path),
@@ -318,7 +331,8 @@ class CustomPropertiesBackend implements BackendInterface {
 						]
 					);
 				} else {
-					$this->connection->executeUpdate($updateStatement,
+					$this->connection->executeUpdate(
+						$updateStatement,
 						[
 							$propertyValue,
 							$this->user->getUID(),
@@ -342,7 +356,8 @@ class CustomPropertiesBackend implements BackendInterface {
 	 * @param string $path
 	 * @return string
 	 */
-	private function formatPath(string $path): string {
+	private function formatPath(string $path): string
+	{
 		if (strlen($path) > 250) {
 			return sha1($path);
 		} else {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OCP\AppFramework\Utility\ITimeFactory;
@@ -35,7 +37,8 @@ use OCP\Share\IShare;
 /**
  * Delete all shares that are expired
  */
-class ExpireSharesJob extends TimedJob {
+class ExpireSharesJob extends TimedJob
+{
 
 	/** @var IManager */
 	private $shareManager;
@@ -43,7 +46,8 @@ class ExpireSharesJob extends TimedJob {
 	/** @var IDBConnection */
 	private $db;
 
-	public function __construct(ITimeFactory $time, IManager $shareManager, IDBConnection $db) {
+	public function __construct(ITimeFactory $time, IManager $shareManager, IDBConnection $db)
+	{
 		$this->shareManager = $shareManager;
 		$this->db = $db;
 
@@ -60,7 +64,8 @@ class ExpireSharesJob extends TimedJob {
 	 *
 	 * @param array $argument unused argument
 	 */
-	public function run($argument) {
+	public function run($argument)
+	{
 		//Current time
 		$now = new \DateTime();
 		$now = $now->format('Y-m-d H:i:s');

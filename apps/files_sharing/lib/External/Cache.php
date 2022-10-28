@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -20,11 +21,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\External;
 
 use OCP\Federation\ICloudId;
 
-class Cache extends \OC\Files\Cache\Cache {
+class Cache extends \OC\Files\Cache\Cache
+{
 	/** @var ICloudId */
 	private $cloudId;
 	private $remote;
@@ -35,7 +38,8 @@ class Cache extends \OC\Files\Cache\Cache {
 	 * @param \OCA\Files_Sharing\External\Storage $storage
 	 * @param ICloudId $cloudId
 	 */
-	public function __construct($storage, ICloudId $cloudId) {
+	public function __construct($storage, ICloudId $cloudId)
+	{
 		$this->cloudId = $cloudId;
 		$this->storage = $storage;
 		[, $remote] = explode('://', $cloudId->getRemote(), 2);
@@ -44,7 +48,8 @@ class Cache extends \OC\Files\Cache\Cache {
 		parent::__construct($storage);
 	}
 
-	public function get($file) {
+	public function get($file)
+	{
 		$result = parent::get($file);
 		if (!$result) {
 			return false;
@@ -58,7 +63,8 @@ class Cache extends \OC\Files\Cache\Cache {
 		return $result;
 	}
 
-	public function getFolderContentsById($id) {
+	public function getFolderContentsById($id)
+	{
 		$results = parent::getFolderContentsById($id);
 		foreach ($results as &$file) {
 			$file['displayname_owner'] = $this->cloudId->getDisplayId();

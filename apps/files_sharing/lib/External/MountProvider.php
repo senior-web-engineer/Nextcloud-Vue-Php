@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\External;
 
 use OCP\Federation\ICloudIdManager;
@@ -30,7 +32,8 @@ use OCP\Files\Storage\IStorageFactory;
 use OCP\IDBConnection;
 use OCP\IUser;
 
-class MountProvider implements IMountProvider {
+class MountProvider implements IMountProvider
+{
 	public const STORAGE = '\OCA\Files_Sharing\External\Storage';
 
 	/**
@@ -53,13 +56,15 @@ class MountProvider implements IMountProvider {
 	 * @param callable $managerProvider due to setup order we need a callable that return the manager instead of the manager itself
 	 * @param ICloudIdManager $cloudIdManager
 	 */
-	public function __construct(IDBConnection $connection, callable $managerProvider, ICloudIdManager $cloudIdManager) {
+	public function __construct(IDBConnection $connection, callable $managerProvider, ICloudIdManager $cloudIdManager)
+	{
 		$this->connection = $connection;
 		$this->managerProvider = $managerProvider;
 		$this->cloudIdManager = $cloudIdManager;
 	}
 
-	public function getMount(IUser $user, $data, IStorageFactory $storageFactory) {
+	public function getMount(IUser $user, $data, IStorageFactory $storageFactory)
+	{
 		$managerProvider = $this->managerProvider;
 		$manager = $managerProvider();
 		$data['manager'] = $manager;
@@ -71,7 +76,8 @@ class MountProvider implements IMountProvider {
 		return new Mount(self::STORAGE, $mountPoint, $data, $manager, $storageFactory);
 	}
 
-	public function getMountsForUser(IUser $user, IStorageFactory $loader) {
+	public function getMountsForUser(IUser $user, IStorageFactory $loader)
+	{
 		$query = $this->connection->prepare('
 				SELECT `remote`, `share_token`, `password`, `mountpoint`, `owner`
 				FROM `*PREFIX*share_external`

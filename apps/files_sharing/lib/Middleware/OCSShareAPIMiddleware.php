@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Roeland Jago Douma <roeland@famdouma.nl>
  *
@@ -22,6 +23,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Middleware;
 
 use OCA\Files_Sharing\Controller\ShareAPIController;
@@ -32,14 +34,17 @@ use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\IL10N;
 use OCP\Share\IManager;
 
-class OCSShareAPIMiddleware extends Middleware {
+class OCSShareAPIMiddleware extends Middleware
+{
 	/** @var IManager */
 	private $shareManager;
 	/** @var IL10N */
 	private $l;
 
-	public function __construct(IManager $shareManager,
-								IL10N $l) {
+	public function __construct(
+		IManager $shareManager,
+		IL10N $l
+	) {
 		$this->shareManager = $shareManager;
 		$this->l = $l;
 	}
@@ -50,7 +55,8 @@ class OCSShareAPIMiddleware extends Middleware {
 	 *
 	 * @throws OCSNotFoundException
 	 */
-	public function beforeController($controller, $methodName) {
+	public function beforeController($controller, $methodName)
+	{
 		if ($controller instanceof ShareAPIController) {
 			if (!$this->shareManager->shareApiEnabled()) {
 				throw new OCSNotFoundException($this->l->t('Share API is disabled'));
@@ -64,7 +70,8 @@ class OCSShareAPIMiddleware extends Middleware {
 	 * @param Response $response
 	 * @return Response
 	 */
-	public function afterController($controller, $methodName, Response $response) {
+	public function afterController($controller, $methodName, Response $response)
+	{
 		if ($controller instanceof ShareAPIController) {
 			/** @var ShareAPIController $controller */
 			$controller->cleanup();

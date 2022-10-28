@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -19,15 +20,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\External;
 
-class Watcher extends \OC\Files\Cache\Watcher {
+class Watcher extends \OC\Files\Cache\Watcher
+{
 	/**
 	 * remove deleted files in $path from the cache
 	 *
 	 * @param string $path
 	 */
-	public function cleanFolder($path) {
+	public function cleanFolder($path)
+	{
 		// not needed, the scanner takes care of this
 	}
 }

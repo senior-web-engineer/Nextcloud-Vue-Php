@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -21,11 +22,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Providers;
 
 use OCP\Activity\IEvent;
 
-class Downloads extends Base {
+class Downloads extends Base
+{
 	public const SUBJECT_PUBLIC_SHARED_FILE_DOWNLOADED = 'public_shared_file_downloaded';
 	public const SUBJECT_PUBLIC_SHARED_FOLDER_DOWNLOADED = 'public_shared_folder_downloaded';
 
@@ -38,14 +41,19 @@ class Downloads extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseShortVersion(IEvent $event) {
+	public function parseShortVersion(IEvent $event)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
-		if ($event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FILE_DOWNLOADED ||
-			$event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FOLDER_DOWNLOADED) {
+		if (
+			$event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FILE_DOWNLOADED ||
+			$event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FOLDER_DOWNLOADED
+		) {
 			$subject = $this->l->t('Downloaded via public link');
-		} elseif ($event->getSubject() === self::SUBJECT_SHARED_FILE_BY_EMAIL_DOWNLOADED ||
-			$event->getSubject() === self::SUBJECT_SHARED_FOLDER_BY_EMAIL_DOWNLOADED) {
+		} elseif (
+			$event->getSubject() === self::SUBJECT_SHARED_FILE_BY_EMAIL_DOWNLOADED ||
+			$event->getSubject() === self::SUBJECT_SHARED_FOLDER_BY_EMAIL_DOWNLOADED
+		) {
 			$subject = $this->l->t('Downloaded by {email}');
 		} else {
 			throw new \InvalidArgumentException();
@@ -68,11 +76,14 @@ class Downloads extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null) {
+	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
-		if ($event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FILE_DOWNLOADED ||
-			$event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FOLDER_DOWNLOADED) {
+		if (
+			$event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FILE_DOWNLOADED ||
+			$event->getSubject() === self::SUBJECT_PUBLIC_SHARED_FOLDER_DOWNLOADED
+		) {
 			if (!isset($parsedParameters['remote-address-hash']['type'])) {
 				$subject = $this->l->t('{file} downloaded via public link');
 				$this->setSubjects($event, $subject, $parsedParameters);
@@ -81,8 +92,10 @@ class Downloads extends Base {
 				$this->setSubjects($event, $subject, $parsedParameters);
 				$event = $this->eventMerger->mergeEvents('file', $event, $previousEvent);
 			}
-		} elseif ($event->getSubject() === self::SUBJECT_SHARED_FILE_BY_EMAIL_DOWNLOADED ||
-			$event->getSubject() === self::SUBJECT_SHARED_FOLDER_BY_EMAIL_DOWNLOADED) {
+		} elseif (
+			$event->getSubject() === self::SUBJECT_SHARED_FILE_BY_EMAIL_DOWNLOADED ||
+			$event->getSubject() === self::SUBJECT_SHARED_FOLDER_BY_EMAIL_DOWNLOADED
+		) {
 			$subject = $this->l->t('{email} downloaded {file}');
 			$this->setSubjects($event, $subject, $parsedParameters);
 		} else {
@@ -103,7 +116,8 @@ class Downloads extends Base {
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	protected function getParsedParameters(IEvent $event) {
+	protected function getParsedParameters(IEvent $event)
+	{
 		$subject = $event->getSubject();
 		$parameters = $event->getSubjectParameters();
 

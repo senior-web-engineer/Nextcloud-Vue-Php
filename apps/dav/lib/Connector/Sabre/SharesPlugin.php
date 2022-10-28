@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -26,6 +27,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\Connector\Sabre;
 
 use OCA\DAV\Connector\Sabre\Node as DavNode;
@@ -38,11 +40,12 @@ use Sabre\DAV\PropFind;
 /**
  * Sabre Plugin to provide share-related properties
  */
-class SharesPlugin extends \Sabre\DAV\ServerPlugin {
+class SharesPlugin extends \Sabre\DAV\ServerPlugin
+{
 	public const NS_OWNCLOUD = 'http://owncloud.org/ns';
-	public const NS_NEXTCLOUD = 'http://nextcloud.org/ns';
+	public const NS_NEXTCLOUD = 'http:// /ns';
 	public const SHARETYPES_PROPERTYNAME = '{http://owncloud.org/ns}share-types';
-	public const SHAREES_PROPERTYNAME = '{http://nextcloud.org/ns}sharees';
+	public const SHAREES_PROPERTYNAME = '{http:// /ns}sharees';
 
 	/**
 	 * Reference to main server object
@@ -97,7 +100,8 @@ class SharesPlugin extends \Sabre\DAV\ServerPlugin {
 	 *
 	 * @param \Sabre\DAV\Server $server
 	 */
-	public function initialize(\Sabre\DAV\Server $server) {
+	public function initialize(\Sabre\DAV\Server $server)
+	{
 		$server->xml->namespaceMap[self::NS_OWNCLOUD] = 'oc';
 		$server->xml->elementMap[self::SHARETYPES_PROPERTYNAME] = ShareTypeList::class;
 		$server->protectedProperties[] = self::SHARETYPES_PROPERTYNAME;
@@ -111,7 +115,8 @@ class SharesPlugin extends \Sabre\DAV\ServerPlugin {
 	 * @param \OCP\Files\Node $node
 	 * @return IShare[]
 	 */
-	private function getShare(\OCP\Files\Node $node): array {
+	private function getShare(\OCP\Files\Node $node): array
+	{
 		$result = [];
 		$requestedShareTypes = [
 			IShare::TYPE_USER,
@@ -142,7 +147,8 @@ class SharesPlugin extends \Sabre\DAV\ServerPlugin {
 	 * @param Folder $node
 	 * @return IShare[][]
 	 */
-	private function getSharesFolder(Folder $node): array {
+	private function getSharesFolder(Folder $node): array
+	{
 		return $this->shareManager->getSharesInFolder(
 			$this->userId,
 			$node,
@@ -154,7 +160,8 @@ class SharesPlugin extends \Sabre\DAV\ServerPlugin {
 	 * @param DavNode $sabreNode
 	 * @return IShare[]
 	 */
-	private function getShares(DavNode $sabreNode): array {
+	private function getShares(DavNode $sabreNode): array
+	{
 		if (isset($this->cachedShares[$sabreNode->getId()])) {
 			$shares = $this->cachedShares[$sabreNode->getId()];
 		} else {
@@ -194,10 +201,10 @@ class SharesPlugin extends \Sabre\DAV\ServerPlugin {
 		}
 
 		// need prefetch ?
-		if ($sabreNode instanceof Directory
+		if (
+			$sabreNode instanceof Directory
 			&& $propFind->getDepth() !== 0
-			&& (
-				!is_null($propFind->getStatus(self::SHARETYPES_PROPERTYNAME)) ||
+			&& (!is_null($propFind->getStatus(self::SHARETYPES_PROPERTYNAME)) ||
 				!is_null($propFind->getStatus(self::SHAREES_PROPERTYNAME))
 			)
 		) {

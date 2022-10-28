@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2017 Robin Appelman <robin@icewind.nl>
  *
@@ -23,6 +24,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\Files;
 
 use OC\Files\Search\SearchBinaryOperator;
@@ -52,7 +54,8 @@ use SearchDAV\Query\Operator;
 use SearchDAV\Query\Order;
 use SearchDAV\Query\Query;
 
-class FileSearchBackend implements ISearchBackend {
+class FileSearchBackend implements ISearchBackend
+{
 	/** @var CachingTree */
 	private $tree;
 
@@ -78,7 +81,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param View $view
 	 * @internal param IRootFolder $rootFolder
 	 */
-	public function __construct(CachingTree $tree, IUser $user, IRootFolder $rootFolder, IManager $shareManager, View $view) {
+	public function __construct(CachingTree $tree, IUser $user, IRootFolder $rootFolder, IManager $shareManager, View $view)
+	{
 		$this->tree = $tree;
 		$this->user = $user;
 		$this->rootFolder = $rootFolder;
@@ -91,11 +95,13 @@ class FileSearchBackend implements ISearchBackend {
 	 *
 	 * @return string
 	 */
-	public function getArbiterPath() {
+	public function getArbiterPath()
+	{
 		return '';
 	}
 
-	public function isValidScope($href, $depth, $path) {
+	public function isValidScope($href, $depth, $path)
+	{
 		// only allow scopes inside the dav server
 		if (is_null($path)) {
 			return false;
@@ -109,7 +115,8 @@ class FileSearchBackend implements ISearchBackend {
 		}
 	}
 
-	public function getPropertyDefinitionsForScope($href, $path) {
+	public function getPropertyDefinitionsForScope($href, $path)
+	{
 		// all valid scopes support the same schema
 
 		//todo dynamically load all propfind properties that are supported
@@ -140,7 +147,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param Query $search
 	 * @return SearchResult[]
 	 */
-	public function search(Query $search) {
+	public function search(Query $search)
+	{
 		if (count($search->from) !== 1) {
 			throw new \InvalidArgumentException('Searching more than one folder is not supported');
 		}
@@ -186,7 +194,8 @@ class FileSearchBackend implements ISearchBackend {
 		return $nodes;
 	}
 
-	private function sort(SearchResult $a, SearchResult $b, array $orders) {
+	private function sort(SearchResult $a, SearchResult $b, array $orders)
+	{
 		/** @var Order $order */
 		foreach ($orders as $order) {
 			$v1 = $this->getSearchResultProperty($a, $order->property);
@@ -217,7 +226,8 @@ class FileSearchBackend implements ISearchBackend {
 		return 0;
 	}
 
-	private function compareProperties($a, $b, Order $order) {
+	private function compareProperties($a, $b, Order $order)
+	{
 		switch ($order->property->dataType) {
 			case SearchPropertyDefinition::DATATYPE_STRING:
 				return strcmp($a, $b);
@@ -240,7 +250,8 @@ class FileSearchBackend implements ISearchBackend {
 		}
 	}
 
-	private function getSearchResultProperty(SearchResult $result, SearchPropertyDefinition $property) {
+	private function getSearchResultProperty(SearchResult $result, SearchPropertyDefinition $property)
+	{
 		/** @var \OCA\DAV\Connector\Sabre\Node $node */
 		$node = $result->node;
 
@@ -262,7 +273,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param Node $node
 	 * @return string
 	 */
-	private function getHrefForNode(Node $node) {
+	private function getHrefForNode(Node $node)
+	{
 		$base = '/files/' . $this->user->getUID();
 		return $base . $this->view->getRelativePath($node->getPath());
 	}
@@ -271,7 +283,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param Query $query
 	 * @return ISearchQuery
 	 */
-	private function transformQuery(Query $query): ISearchQuery {
+	private function transformQuery(Query $query): ISearchQuery
+	{
 		$limit = $query->limit;
 		$orders = array_map([$this, 'mapSearchOrder'], $query->orderBy);
 		$offset = $limit->firstResult;
@@ -300,7 +313,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param Order $order
 	 * @return ISearchOrder
 	 */
-	private function mapSearchOrder(Order $order) {
+	private function mapSearchOrder(Order $order)
+	{
 		return new SearchOrder($order->order === Order::ASC ? ISearchOrder::DIRECTION_ASCENDING : ISearchOrder::DIRECTION_DESCENDING, $this->mapPropertyNameToColumn($order->property));
 	}
 
@@ -308,7 +322,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param Operator $operator
 	 * @return ISearchOperator
 	 */
-	private function transformSearchOperation(Operator $operator) {
+	private function transformSearchOperation(Operator $operator)
+	{
 		[, $trimmedType] = explode('}', $operator->type);
 		switch ($operator->type) {
 			case Operator::OPERATION_AND:
@@ -343,7 +358,8 @@ class FileSearchBackend implements ISearchBackend {
 	 * @param SearchPropertyDefinition $property
 	 * @return string
 	 */
-	private function mapPropertyNameToColumn(SearchPropertyDefinition $property) {
+	private function mapPropertyNameToColumn(SearchPropertyDefinition $property)
+	{
 		switch ($property->name) {
 			case '{DAV:}displayname':
 				return 'name';
@@ -364,7 +380,8 @@ class FileSearchBackend implements ISearchBackend {
 		}
 	}
 
-	private function castValue(SearchPropertyDefinition $property, $value) {
+	private function castValue(SearchPropertyDefinition $property, $value)
+	{
 		switch ($property->dataType) {
 			case SearchPropertyDefinition::DATATYPE_BOOLEAN:
 				return $value === 'yes';
@@ -386,7 +403,8 @@ class FileSearchBackend implements ISearchBackend {
 	/**
 	 * Get a specific property from the were clause
 	 */
-	private function extractWhereValue(Operator &$operator, string $propertyName, string $comparison, bool $acceptableLocation = true): ?string {
+	private function extractWhereValue(Operator &$operator, string $propertyName, string $comparison, bool $acceptableLocation = true): ?string
+	{
 		switch ($operator->type) {
 			case Operator::OPERATION_AND:
 			case Operator::OPERATION_OR:

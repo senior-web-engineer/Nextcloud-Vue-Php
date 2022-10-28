@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2017 Arthur Schiwon <blizzz@arthur-schiwon.de>
  *
@@ -21,6 +22,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Collaboration;
 
 use OCP\Collaboration\AutoComplete\ISorter;
@@ -30,7 +32,8 @@ use OCP\Files\Node;
 use OCP\IUserSession;
 use OCP\Share\IManager;
 
-class ShareRecipientSorter implements ISorter {
+class ShareRecipientSorter implements ISorter
+{
 
 	/** @var IManager */
 	private $shareManager;
@@ -39,17 +42,20 @@ class ShareRecipientSorter implements ISorter {
 	/** @var IUserSession */
 	private $userSession;
 
-	public function __construct(IManager $shareManager, IRootFolder $rootFolder, IUserSession $userSession) {
+	public function __construct(IManager $shareManager, IRootFolder $rootFolder, IUserSession $userSession)
+	{
 		$this->shareManager = $shareManager;
 		$this->rootFolder = $rootFolder;
 		$this->userSession = $userSession;
 	}
 
-	public function getId() {
+	public function getId()
+	{
 		return 'share-recipients';
 	}
 
-	public function sort(array &$sortArray, array $context) {
+	public function sort(array &$sortArray, array $context)
+	{
 		// let's be tolerant. Comments  uses "files" by default, other usages are often singular
 		if ($context['itemType'] !== 'files' && $context['itemType'] !== 'file') {
 			return;
@@ -97,7 +103,8 @@ class ShareRecipientSorter implements ISorter {
 	 * @param array $al
 	 * @return int
 	 */
-	protected function compare(array $a, array $b, array $al) {
+	protected function compare(array $a, array $b, array $al)
+	{
 		$a = $a['value']['shareWith'];
 		$b = $b['value']['shareWith'];
 

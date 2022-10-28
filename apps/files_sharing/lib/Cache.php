@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -26,6 +27,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Files\Cache\FailedCache;
@@ -45,7 +47,8 @@ use OCP\IUserManager;
  *
  * don't use this class directly if you need to get metadata, use \OC\Files\Filesystem::getFileInfo instead
  */
-class Cache extends CacheJail {
+class Cache extends CacheJail
+{
 	/** @var \OCA\Files_Sharing\SharedStorage */
 	private $storage;
 	/** @var ICacheEntry */
@@ -62,7 +65,8 @@ class Cache extends CacheJail {
 	/**
 	 * @param \OCA\Files_Sharing\SharedStorage $storage
 	 */
-	public function __construct($storage, ICacheEntry $sourceRootInfo, IUserManager $userManager) {
+	public function __construct($storage, ICacheEntry $sourceRootInfo, IUserManager $userManager)
+	{
 		$this->storage = $storage;
 		$this->sourceRootInfo = $sourceRootInfo;
 		$this->userManager = $userManager;
@@ -74,7 +78,8 @@ class Cache extends CacheJail {
 		);
 	}
 
-	protected function getRoot() {
+	protected function getRoot()
+	{
 		if ($this->root === '') {
 			$absoluteRoot = $this->sourceRootInfo->getPath();
 
@@ -91,11 +96,13 @@ class Cache extends CacheJail {
 		return $this->root;
 	}
 
-	protected function getGetUnjailedRoot() {
+	protected function getGetUnjailedRoot()
+	{
 		return $this->sourceRootInfo->getPath();
 	}
 
-	public function getCache() {
+	public function getCache()
+	{
 		if (is_null($this->cache)) {
 			$sourceStorage = $this->storage->getSourceStorage();
 			if ($sourceStorage) {
@@ -108,7 +115,8 @@ class Cache extends CacheJail {
 		return $this->cache;
 	}
 
-	public function getNumericStorageId() {
+	public function getNumericStorageId()
+	{
 		if (isset($this->numericId)) {
 			return $this->numericId;
 		} else {
@@ -116,34 +124,40 @@ class Cache extends CacheJail {
 		}
 	}
 
-	public function get($file) {
+	public function get($file)
+	{
 		if ($this->rootUnchanged && ($file === '' || $file === $this->sourceRootInfo->getId())) {
 			return $this->formatCacheEntry(clone $this->sourceRootInfo, '');
 		}
 		return parent::get($file);
 	}
 
-	public function update($id, array $data) {
+	public function update($id, array $data)
+	{
 		$this->rootUnchanged = false;
 		parent::update($id, $data);
 	}
 
-	public function insert($file, array $data) {
+	public function insert($file, array $data)
+	{
 		$this->rootUnchanged = false;
 		return parent::insert($file, $data);
 	}
 
-	public function remove($file) {
+	public function remove($file)
+	{
 		$this->rootUnchanged = false;
 		parent::remove($file);
 	}
 
-	public function moveFromCache(\OCP\Files\Cache\ICache $sourceCache, $sourcePath, $targetPath) {
+	public function moveFromCache(\OCP\Files\Cache\ICache $sourceCache, $sourcePath, $targetPath)
+	{
 		$this->rootUnchanged = false;
 		return parent::moveFromCache($sourceCache, $sourcePath, $targetPath);
 	}
 
-	protected function formatCacheEntry($entry, $path = null) {
+	protected function formatCacheEntry($entry, $path = null)
+	{
 		if (is_null($path)) {
 			$path = $entry['path'] ?? '';
 			$entry['path'] = $this->getJailedPath($path);
@@ -170,7 +184,8 @@ class Cache extends CacheJail {
 		return $entry;
 	}
 
-	private function getOwnerDisplayName() {
+	private function getOwnerDisplayName()
+	{
 		if (!$this->ownerDisplayName) {
 			$uid = $this->storage->getOwner('');
 			$user = $this->userManager->get($uid);
@@ -186,11 +201,13 @@ class Cache extends CacheJail {
 	/**
 	 * remove all entries for files that are stored on the storage from the cache
 	 */
-	public function clear() {
+	public function clear()
+	{
 		// Not a valid action for Shared Cache
 	}
 
-	public function getQueryFilterForStorage(): ISearchOperator {
+	public function getQueryFilterForStorage(): ISearchOperator
+	{
 		// Do the normal jail behavior for non files
 		if ($this->storage->getItemType() !== 'file') {
 			return parent::getQueryFilterForStorage();

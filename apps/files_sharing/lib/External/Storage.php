@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -29,6 +30,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing\External;
 
 use GuzzleHttp\Exception\ClientException;
@@ -48,7 +50,8 @@ use OCP\Files\StorageNotAvailableException;
 use OCP\Http\Client\LocalServerException;
 use OCP\Http\Client\IClientService;
 
-class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
+class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage
+{
 	/** @var ICloudId */
 	private $cloudId;
 	/** @var string */
@@ -68,7 +71,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	/**
 	 * @param array{HttpClientService: IClientService, manager: ExternalShareManager, cloudId: ICloudId, mountpoint: string, token: string, password: ?string}|array $options
 	 */
-	public function __construct($options) {
+	public function __construct($options)
+	{
 		$this->memcacheFactory = \OC::$server->getMemCacheFactory();
 		$this->httpClient = $options['HttpClientService'];
 
@@ -99,7 +103,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		]);
 	}
 
-	public function getWatcher($path = '', $storage = null) {
+	public function getWatcher($path = '', $storage = null)
+	{
 		if (!$storage) {
 			$storage = $this;
 		}
@@ -110,23 +115,28 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		return $this->watcher;
 	}
 
-	public function getRemoteUser(): string {
+	public function getRemoteUser(): string
+	{
 		return $this->cloudId->getUser();
 	}
 
-	public function getRemote(): string {
+	public function getRemote(): string
+	{
 		return $this->cloudId->getRemote();
 	}
 
-	public function getMountPoint(): string {
+	public function getMountPoint(): string
+	{
 		return $this->mountPoint;
 	}
 
-	public function getToken(): string {
+	public function getToken(): string
+	{
 		return $this->token;
 	}
 
-	public function getPassword(): ?string {
+	public function getPassword(): ?string
+	{
 		return $this->password;
 	}
 
@@ -134,11 +144,13 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 * Get id of the mount point.
 	 * @return string
 	 */
-	public function getId() {
+	public function getId()
+	{
 		return 'shared::' . md5($this->token . '@' . $this->getRemote());
 	}
 
-	public function getCache($path = '', $storage = null) {
+	public function getCache($path = '', $storage = null)
+	{
 		if (is_null($this->cache)) {
 			$this->cache = new Cache($this, $this->cloudId);
 		}
@@ -150,7 +162,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 * @param \OC\Files\Storage\Storage $storage
 	 * @return \OCA\Files_Sharing\External\Scanner
 	 */
-	public function getScanner($path = '', $storage = null) {
+	public function getScanner($path = '', $storage = null)
+	{
 		if (!$storage) {
 			$storage = $this;
 		}
@@ -169,7 +182,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 * @throws \OCP\Files\StorageInvalidException
 	 * @return bool
 	 */
-	public function hasUpdated($path, $time) {
+	public function hasUpdated($path, $time)
+	{
 		// since for owncloud webdav servers we can rely on etag propagation we only need to check the root of the storage
 		// because of that we only do one check for the entire storage per request
 		if ($this->updateChecked) {
@@ -189,7 +203,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		}
 	}
 
-	public function test() {
+	public function test()
+	{
 		try {
 			return parent::test();
 		} catch (StorageInvalidException $e) {
@@ -210,7 +225,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 * @throws \OCP\Files\StorageNotAvailableException
 	 * @throws \OCP\Files\StorageInvalidException
 	 */
-	public function checkStorageAvailability() {
+	public function checkStorageAvailability()
+	{
 		// see if we can find out why the share is unavailable
 		try {
 			$this->getShareInfo();
@@ -239,7 +255,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		}
 	}
 
-	public function file_exists($path) {
+	public function file_exists($path)
+	{
 		if ($path === '') {
 			return true;
 		} else {
@@ -252,7 +269,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 *
 	 * @return bool
 	 */
-	protected function testRemote(): bool {
+	protected function testRemote(): bool
+	{
 		try {
 			return $this->testRemoteUrl($this->getRemote() . '/ocs-provider/index.php')
 				|| $this->testRemoteUrl($this->getRemote() . '/ocs-provider/')
@@ -262,7 +280,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		}
 	}
 
-	private function testRemoteUrl(string $url): bool {
+	private function testRemoteUrl(string $url): bool
+	{
 		$cache = $this->memcacheFactory->createDistributed('files_sharing_remote_url');
 		if ($cache->hasKey($url)) {
 			return (bool)$cache->get($url);
@@ -294,7 +313,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 *
 	 * @throws LocalServerException
 	 */
-	public function remoteIsOwnCloud(): bool {
+	public function remoteIsOwnCloud(): bool
+	{
 		if (defined('PHPUNIT_RUN') || !$this->testRemoteUrl($this->getRemote() . '/status.php')) {
 			return false;
 		}
@@ -307,7 +327,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 * @throws NotFoundException
 	 * @throws \Exception
 	 */
-	public function getShareInfo() {
+	public function getShareInfo()
+	{
 		$remote = $this->getRemote();
 		$token = $this->getToken();
 		$password = $this->getPassword();
@@ -350,18 +371,21 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		return json_decode($response->getBody(), true);
 	}
 
-	public function getOwner($path) {
+	public function getOwner($path)
+	{
 		return $this->cloudId->getDisplayId();
 	}
 
-	public function isSharable($path) {
+	public function isSharable($path)
+	{
 		if (\OCP\Util::isSharingDisabledForUser() || !\OC\Share\Share::isResharingAllowed()) {
 			return false;
 		}
 		return ($this->getPermissions($path) & Constants::PERMISSION_SHARE);
 	}
 
-	public function getPermissions($path) {
+	public function getPermissions($path)
+	{
 		$response = $this->propfind($path);
 		// old federated sharing permissions
 		if (isset($response['{http://open-collaboration-services.org/ns}share-permissions'])) {
@@ -377,7 +401,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 		return $permissions;
 	}
 
-	public function needsPartFile() {
+	public function needsPartFile()
+	{
 		return false;
 	}
 
@@ -388,7 +413,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	 * @param string $path path to file
 	 * @return int
 	 */
-	protected function ocmPermissions2ncPermissions(string $ocmPermissions, string $path): int {
+	protected function ocmPermissions2ncPermissions(string $ocmPermissions, string $path): int
+	{
 		try {
 			$ocmPermissions = json_decode($ocmPermissions);
 			$ncPermissions = 0;
@@ -417,7 +443,8 @@ class Storage extends DAV implements ISharedStorage, IDisableEncryptionStorage {
 	/**
 	 * Calculate the default permissions in case no permissions are provided
 	 */
-	protected function getDefaultPermissions(string $path): int {
+	protected function getDefaultPermissions(string $path): int
+	{
 		if ($this->is_dir($path)) {
 			$permissions = Constants::PERMISSION_ALL;
 		} else {

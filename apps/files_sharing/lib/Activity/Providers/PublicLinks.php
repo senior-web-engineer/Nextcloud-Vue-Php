@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016 Joas Schilling <coding@schilljs.com>
  *
@@ -21,11 +22,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Activity\Providers;
 
 use OCP\Activity\IEvent;
 
-class PublicLinks extends Base {
+class PublicLinks extends Base
+{
 	public const SUBJECT_SHARED_LINK_SELF = 'shared_link_self';
 	public const SUBJECT_RESHARED_LINK_BY = 'reshared_link_by';
 	public const SUBJECT_UNSHARED_LINK_SELF = 'unshared_link_self';
@@ -39,7 +42,8 @@ class PublicLinks extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseShortVersion(IEvent $event) {
+	public function parseShortVersion(IEvent $event)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
 		if ($event->getSubject() === self::SUBJECT_SHARED_LINK_SELF) {
@@ -75,7 +79,8 @@ class PublicLinks extends Base {
 	 * @throws \InvalidArgumentException
 	 * @since 11.0.0
 	 */
-	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null) {
+	public function parseLongVersion(IEvent $event, IEvent $previousEvent = null)
+	{
 		$parsedParameters = $this->getParsedParameters($event);
 
 		if ($event->getSubject() === self::SUBJECT_SHARED_LINK_SELF) {
@@ -104,7 +109,8 @@ class PublicLinks extends Base {
 		return $event;
 	}
 
-	protected function getParsedParameters(IEvent $event) {
+	protected function getParsedParameters(IEvent $event)
+	{
 		$subject = $event->getSubject();
 		$parameters = $event->getSubjectParameters();
 

@@ -26,6 +26,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\AppInfo;
 
 use OC\ServerContainer;
@@ -43,7 +44,8 @@ use function is_array;
  * Manager for DAV plugins from apps, used to register them
  * to the Sabre server.
  */
-class PluginManager {
+class PluginManager
+{
 
 	/**
 	 * @var ServerContainer
@@ -92,7 +94,8 @@ class PluginManager {
 	 * @param ServerContainer $container server container for resolving plugin classes
 	 * @param IAppManager $appManager app manager to loading apps and their info
 	 */
-	public function __construct(ServerContainer $container, IAppManager $appManager) {
+	public function __construct(ServerContainer $container, IAppManager $appManager)
+	{
 		$this->container = $container;
 		$this->appManager = $appManager;
 	}
@@ -102,7 +105,8 @@ class PluginManager {
 	 *
 	 * @return ServerPlugin[]
 	 */
-	public function getAppPlugins() {
+	public function getAppPlugins()
+	{
 		$this->populate();
 		return $this->plugins;
 	}
@@ -112,7 +116,8 @@ class PluginManager {
 	 *
 	 * @return array
 	 */
-	public function getAppCollections() {
+	public function getAppCollections()
+	{
 		$this->populate();
 		return $this->collections;
 	}
@@ -120,7 +125,8 @@ class PluginManager {
 	/**
 	 * @return IAddressBookProvider[]
 	 */
-	public function getAddressBookPlugins(): array {
+	public function getAddressBookPlugins(): array
+	{
 		$this->populate();
 		return $this->addressBookPlugins;
 	}
@@ -130,7 +136,8 @@ class PluginManager {
 	 *
 	 * @return ICalendarProvider[]
 	 */
-	public function getCalendarPlugins():array {
+	public function getCalendarPlugins(): array
+	{
 		$this->populate();
 		return $this->calendarPlugins;
 	}
@@ -138,7 +145,8 @@ class PluginManager {
 	/**
 	 * Retrieve plugin and collection list and populate attributes
 	 */
-	private function populate(): void {
+	private function populate(): void
+	{
 		if ($this->populated) {
 			return;
 		}
@@ -176,7 +184,8 @@ class PluginManager {
 	 * @param array $array
 	 * @return string[]
 	 */
-	private function extractPluginList(array $array): array {
+	private function extractPluginList(array $array): array
+	{
 		if (isset($array['sabre']) && is_array($array['sabre'])) {
 			if (isset($array['sabre']['plugins']) && is_array($array['sabre']['plugins'])) {
 				if (isset($array['sabre']['plugins']['plugin'])) {
@@ -195,7 +204,8 @@ class PluginManager {
 	 * @param array $array
 	 * @return string[]
 	 */
-	private function extractCollectionList(array $array): array {
+	private function extractCollectionList(array $array): array
+	{
 		if (isset($array['sabre']) && is_array($array['sabre'])) {
 			if (isset($array['sabre']['collections']) && is_array($array['sabre']['collections'])) {
 				if (isset($array['sabre']['collections']['collection'])) {
@@ -214,7 +224,8 @@ class PluginManager {
 	 * @param array $array
 	 * @return string[]
 	 */
-	private function extractAddressBookPluginList(array $array): array {
+	private function extractAddressBookPluginList(array $array): array
+	{
 		if (!isset($array['sabre']) || !is_array($array['sabre'])) {
 			return [];
 		}
@@ -236,7 +247,8 @@ class PluginManager {
 	 * @param array $array
 	 * @return string[]
 	 */
-	private function extractCalendarPluginList(array $array): array {
+	private function extractCalendarPluginList(array $array): array
+	{
 		if (isset($array['sabre']) && is_array($array['sabre'])) {
 			if (isset($array['sabre']['calendar-plugins']) && is_array($array['sabre']['calendar-plugins'])) {
 				if (isset($array['sabre']['calendar-plugins']['plugin'])) {
@@ -251,7 +263,8 @@ class PluginManager {
 		return [];
 	}
 
-	private function createClass(string $className): object {
+	private function createClass(string $className): object
+	{
 		try {
 			return $this->container->query($className);
 		} catch (QueryException $e) {
@@ -269,7 +282,8 @@ class PluginManager {
 	 * @return ServerPlugin[]
 	 * @throws \Exception
 	 */
-	private function loadSabrePluginsFromInfoXml(array $classes): array {
+	private function loadSabrePluginsFromInfoXml(array $classes): array
+	{
 		return array_map(function (string $className): ServerPlugin {
 			$instance = $this->createClass($className);
 			if (!($instance instanceof ServerPlugin)) {
@@ -283,7 +297,8 @@ class PluginManager {
 	 * @param string[] $classes
 	 * @return Collection[]
 	 */
-	private function loadSabreCollectionsFromInfoXml(array $classes): array {
+	private function loadSabreCollectionsFromInfoXml(array $classes): array
+	{
 		return array_map(function (string $className): Collection {
 			$instance = $this->createClass($className);
 			if (!($instance instanceof Collection)) {
@@ -297,7 +312,8 @@ class PluginManager {
 	 * @param string[] $classes
 	 * @return IAddressBookProvider[]
 	 */
-	private function loadSabreAddressBookPluginsFromInfoXml(array $classes): array {
+	private function loadSabreAddressBookPluginsFromInfoXml(array $classes): array
+	{
 		return array_map(function (string $className): IAddressBookProvider {
 			$instance = $this->createClass($className);
 			if (!($instance instanceof IAddressBookProvider)) {
@@ -311,7 +327,8 @@ class PluginManager {
 	 * @param string[] $classes
 	 * @return ICalendarProvider[]
 	 */
-	private function loadSabreCalendarPluginsFromInfoXml(array $classes): array {
+	private function loadSabreCalendarPluginsFromInfoXml(array $classes): array
+	{
 		return array_map(function (string $className): ICalendarProvider {
 			$instance = $this->createClass($className);
 			if (!($instance instanceof ICalendarProvider)) {

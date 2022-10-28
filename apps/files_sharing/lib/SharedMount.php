@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
@@ -26,6 +27,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\Files_Sharing;
 
 use OC\Cache\CappedMemoryCache;
@@ -40,7 +42,8 @@ use OCP\Share\Events\VerifyMountPointEvent;
 /**
  * Shared mount points can be moved by the user
  */
-class SharedMount extends MountPoint implements MoveableMount {
+class SharedMount extends MountPoint implements MoveableMount
+{
 	/**
 	 * @var \OCA\Files_Sharing\SharedStorage $storage
 	 */
@@ -69,7 +72,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 * @param IStorageFactory $loader
 	 * @param View $recipientView
 	 */
-	public function __construct($storage, array $mountpoints, $arguments, IStorageFactory $loader, View $recipientView, CappedMemoryCache $folderExistCache) {
+	public function __construct($storage, array $mountpoints, $arguments, IStorageFactory $loader, View $recipientView, CappedMemoryCache $folderExistCache)
+	{
 		$this->user = $arguments['user'];
 		$this->recipientView = $recipientView;
 
@@ -88,7 +92,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 * @param SharedMount[] $mountpoints
 	 * @return string
 	 */
-	private function verifyMountPoint(\OCP\Share\IShare $share, array $mountpoints, CappedMemoryCache $folderExistCache) {
+	private function verifyMountPoint(\OCP\Share\IShare $share, array $mountpoints, CappedMemoryCache $folderExistCache)
+	{
 		$mountPoint = basename($share->getTarget());
 		$parent = dirname($share->getTarget());
 
@@ -128,7 +133,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 * @param \OCP\Share\IShare $share
 	 * @return bool
 	 */
-	private function updateFileTarget($newPath, &$share) {
+	private function updateFileTarget($newPath, &$share)
+	{
 		$share->setTarget($newPath);
 
 		foreach ($this->groupedShares as $tmpShare) {
@@ -144,7 +150,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 * @param SharedMount[] $mountpoints
 	 * @return mixed
 	 */
-	private function generateUniqueTarget($path, $view, array $mountpoints) {
+	private function generateUniqueTarget($path, $view, array $mountpoints)
+	{
 		$pathinfo = pathinfo($path);
 		$ext = isset($pathinfo['extension']) ? '.' . $pathinfo['extension'] : '';
 		$name = $pathinfo['filename'];
@@ -168,7 +175,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 * @return string e.g. turns '/admin/files/test.txt' into '/test.txt'
 	 * @throws \OCA\Files_Sharing\Exceptions\BrokenPath
 	 */
-	protected function stripUserFilesPath($path) {
+	protected function stripUserFilesPath($path)
+	{
 		$trimmed = ltrim($path, '/');
 		$split = explode('/', $trimmed);
 
@@ -191,7 +199,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 * @param string $target the target mount point
 	 * @return bool
 	 */
-	public function moveMount($target) {
+	public function moveMount($target)
+	{
 		$relTargetPath = $this->stripUserFilesPath($target);
 		$share = $this->storage->getShare();
 
@@ -213,7 +222,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 *
 	 * @return bool
 	 */
-	public function removeMount() {
+	public function removeMount()
+	{
 		$mountManager = \OC\Files\Filesystem::getMountManager();
 		/** @var \OCA\Files_Sharing\SharedStorage $storage */
 		$storage = $this->getStorage();
@@ -226,7 +236,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 	/**
 	 * @return \OCP\Share\IShare
 	 */
-	public function getShare() {
+	public function getShare()
+	{
 		return $this->superShare;
 	}
 
@@ -235,14 +246,16 @@ class SharedMount extends MountPoint implements MoveableMount {
 	 *
 	 * @return int
 	 */
-	public function getStorageRootId() {
+	public function getStorageRootId()
+	{
 		return $this->getShare()->getNodeId();
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getNumericStorageId() {
+	public function getNumericStorageId()
+	{
 		if (!is_null($this->getShare()->getNodeCacheEntry())) {
 			return $this->getShare()->getNodeCacheEntry()->getStorageId();
 		} else {
@@ -262,7 +275,8 @@ class SharedMount extends MountPoint implements MoveableMount {
 		}
 	}
 
-	public function getMountType() {
+	public function getMountType()
+	{
 		return 'shared';
 	}
 }

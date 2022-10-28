@@ -25,6 +25,7 @@ declare(strict_types=1);
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Trashbin\Sabre;
 
 use OCA\DAV\Connector\Sabre\FilesPlugin;
@@ -34,11 +35,12 @@ use Sabre\DAV\PropFind;
 use Sabre\DAV\Server;
 use Sabre\DAV\ServerPlugin;
 
-class PropfindPlugin extends ServerPlugin {
-	public const TRASHBIN_FILENAME = '{http://nextcloud.org/ns}trashbin-filename';
-	public const TRASHBIN_ORIGINAL_LOCATION = '{http://nextcloud.org/ns}trashbin-original-location';
-	public const TRASHBIN_DELETION_TIME = '{http://nextcloud.org/ns}trashbin-deletion-time';
-	public const TRASHBIN_TITLE = '{http://nextcloud.org/ns}trashbin-title';
+class PropfindPlugin extends ServerPlugin
+{
+	public const TRASHBIN_FILENAME = '{http:// /ns}trashbin-filename';
+	public const TRASHBIN_ORIGINAL_LOCATION = '{http:// /ns}trashbin-original-location';
+	public const TRASHBIN_DELETION_TIME = '{http:// /ns}trashbin-deletion-time';
+	public const TRASHBIN_TITLE = '{http:// /ns}trashbin-title';
 
 	/** @var Server */
 	private $server;
@@ -52,14 +54,16 @@ class PropfindPlugin extends ServerPlugin {
 		$this->previewManager = $previewManager;
 	}
 
-	public function initialize(Server $server) {
+	public function initialize(Server $server)
+	{
 		$this->server = $server;
 
 		$this->server->on('propFind', [$this, 'propFind']);
 	}
 
 
-	public function propFind(PropFind $propFind, INode $node) {
+	public function propFind(PropFind $propFind, INode $node)
+	{
 		if (!($node instanceof ITrash)) {
 			return;
 		}

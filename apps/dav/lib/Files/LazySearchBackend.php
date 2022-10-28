@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (c) 2018 Robin Appelman <robin@icewind.nl>
  *
@@ -20,22 +21,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\Files;
 
 use SearchDAV\Backend\ISearchBackend;
 use SearchDAV\Query\Query;
 
-class LazySearchBackend implements ISearchBackend {
+class LazySearchBackend implements ISearchBackend
+{
 	/**
 	 * @var ISearchBackend $backend
 	 */
 	private $backend = null;
 
-	public function setBackend(ISearchBackend $backend) {
+	public function setBackend(ISearchBackend $backend)
+	{
 		$this->backend = $backend;
 	}
 
-	public function getArbiterPath() {
+	public function getArbiterPath()
+	{
 		if ($this->backend) {
 			return $this->backend->getArbiterPath();
 		} else {
@@ -43,7 +48,8 @@ class LazySearchBackend implements ISearchBackend {
 		}
 	}
 
-	public function isValidScope($href, $depth, $path) {
+	public function isValidScope($href, $depth, $path)
+	{
 		if ($this->backend) {
 			return $this->backend->getArbiterPath();
 		} else {
@@ -51,7 +57,8 @@ class LazySearchBackend implements ISearchBackend {
 		}
 	}
 
-	public function getPropertyDefinitionsForScope($href, $path) {
+	public function getPropertyDefinitionsForScope($href, $path)
+	{
 		if ($this->backend) {
 			return $this->backend->getPropertyDefinitionsForScope($href, $path);
 		} else {
@@ -59,7 +66,8 @@ class LazySearchBackend implements ISearchBackend {
 		}
 	}
 
-	public function search(Query $query) {
+	public function search(Query $query)
+	{
 		if ($this->backend) {
 			return $this->backend->search($query);
 		} else {
