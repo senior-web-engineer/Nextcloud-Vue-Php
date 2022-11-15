@@ -1766,6 +1766,9 @@
 			if (extension) {
 				nameSpan.append($('<span></span>').addClass('extension').text(extension));
 			}
+			
+			nameSpan.append($('<span></span>').addClass('extension').addClass('publish-status').text(fileData.isPublished?"ok":"no"));
+			
 			if (fileData.extraData) {
 				if (fileData.extraData.charAt(0) === '/') {
 					fileData.extraData = fileData.extraData.substr(1);

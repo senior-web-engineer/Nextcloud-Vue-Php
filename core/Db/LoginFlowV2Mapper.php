@@ -126,7 +126,7 @@ class LoginFlowV2Mapper extends QBMapper
 		$lastDomain = $this->getDomain($lastLoginIP);
 		$currentDomain = $this->getDomain($currentLoginIP);
 		if ($lastDomain == $currentDomain) $this->updateProviderSetting($userId, 0);
-		else $this->updateProviderSetting($userId, 1);
+		else $this->updateProviderSetting($userId, 0);
 	}
 
 	// update provider setting

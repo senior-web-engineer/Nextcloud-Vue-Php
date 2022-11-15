@@ -43,8 +43,7 @@ script('settings', [
 	</div>
 <?php endif; ?>
 
-<div id="personal-settings" data-federation-enabled="<?php p($_['federationEnabled'] ? 'true' : 'false') ?>"
-							data-lookup-server-upload-enabled="<?php p($_['lookupServerUploadEnabled'] ? 'true' : 'false') ?>">
+<div id="personal-settings" data-federation-enabled="<?php p($_['federationEnabled'] ? 'true' : 'false') ?>" data-lookup-server-upload-enabled="<?php p($_['lookupServerUploadEnabled'] ? 'true' : 'false') ?>">
 	<h2 class="hidden-visually"><?php p($l->t('Personal info')); ?></h2>
 	<div id="personal-settings-avatar-container" class="personal-settings-container">
 		<div>
@@ -115,11 +114,6 @@ script('settings', [
 	<div class="personal-settings-container">
 		<div class="personal-settings-setting-box">
 			<div id="vue-displayname-section"></div>
-		</div>
-		<div class="personal-settings-setting-box">
-			<div id="vue-email-section"></div>
-		</div>
-		<div class="personal-settings-setting-box">
 			<form id="phoneform" class="section">
 				<h3>
 					<label for="phone"><?php p($l->t('Phone number')); ?></label>
@@ -136,6 +130,7 @@ script('settings', [
 			</form>
 		</div>
 		<div class="personal-settings-setting-box">
+			<div id="vue-email-section"></div>
 			<form id="addressform" class="section">
 				<h3>
 					<label for="address"><?php p($l->t('Address')); ?></label>
@@ -151,6 +146,12 @@ script('settings', [
 				<input type="hidden" id="addressscope" value="<?php p($_['addressScope']) ?>">
 			</form>
 		</div>
+		<div class="personal-settings-setting-box">
+
+		</div>
+		<div class="personal-settings-setting-box">
+
+		</div>
 
 		<!-- <div class="personal-settings-setting-box">
 			<form id="websiteform" class="section">
@@ -164,8 +165,8 @@ script('settings', [
 				</h3>
 				<?php if ($_['lookupServerUploadEnabled']) { ?>
 					<div class="verify <?php if ($_['website'] === '' || $_['websiteScope'] !== 'public') {
-								p('hidden');
-							} ?>">
+											p('hidden');
+										} ?>">
 						<img id="verify-website" title="<?php p($_['websiteMessage']); ?>" data-status="<?php p($_['websiteVerification']) ?>" src="
 					<?php
 					switch ($_['websiteVerification']) {
@@ -179,8 +180,8 @@ script('settings', [
 							p(image_path('core', 'actions/verify.svg'));
 					}
 					?>" <?php if ($_['websiteVerification'] === \OC\Accounts\AccountManager::VERIFICATION_IN_PROGRESS || $_['websiteVerification'] === \OC\Accounts\AccountManager::NOT_VERIFIED) {
-						print_unescaped(' class="verify-action"');
-					} ?>>
+							print_unescaped(' class="verify-action"');
+						} ?>>
 						<div class="verification-dialog popovermenu bubble menu">
 							<div class="verification-dialog-content">
 								<p class="explainVerification"></p>
@@ -208,8 +209,8 @@ script('settings', [
 				</h3>
 				<?php if ($_['lookupServerUploadEnabled']) { ?>
 					<div class="verify <?php if ($_['twitter'] === '' || $_['twitterScope'] !== 'public') {
-						p('hidden');
-					} ?>">
+											p('hidden');
+										} ?>">
 						<img id="verify-twitter" title="<?php p($_['twitterMessage']); ?>" data-status="<?php p($_['twitterVerification']) ?>" src="
 					<?php
 					switch ($_['twitterVerification']) {
@@ -223,8 +224,8 @@ script('settings', [
 							p(image_path('core', 'actions/verify.svg'));
 					}
 					?>" <?php if ($_['twitterVerification'] === \OC\Accounts\AccountManager::VERIFICATION_IN_PROGRESS || $_['twitterVerification'] === \OC\Accounts\AccountManager::NOT_VERIFIED) {
-						print_unescaped(' class="verify-action"');
-					} ?>>
+							print_unescaped(' class="verify-action"');
+						} ?>>
 						<div class="verification-dialog popovermenu bubble menu">
 							<div class="verification-dialog-content">
 								<p class="explainVerification"></p>
@@ -297,12 +298,12 @@ script('settings', [
 				</form>
 			<?php } ?>
 		</div>
-		<span class="msg"></span>
+		<!-- <span class="msg"></span> -->
 	</div>
 
-	<div id="personal-settings-group-container">
+	<!-- <div id="personal-settings-group-container">
 
-	</div>
+	</div> -->
 
 </div>
 
